@@ -33,7 +33,12 @@ func main() {
 
 	config.LOGGER.Info("Starting server on localhost:" + config.PORT)
 
-	controller.CreateReaderController(&config, router)
+	err := controller.CreateReaderController(&config, router)
+
+	if err != nil {
+		config.LOGGER.Fatal("Routers errorr")
+		return
+	}
 
 	if err := router.Run("localhost:" + config.PORT); err != nil {
 		log.Fatal(err)
