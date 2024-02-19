@@ -1,0 +1,39 @@
+package main
+
+import (
+	"log"
+	controller "unrealDestiny/contractsReader/src"
+	"unrealDestiny/contractsReader/src/modules/config"
+	"unrealDestiny/contractsReader/src/modules/env"
+	"unrealDestiny/contractsReader/src/modules/logger"
+
+	"github.com/gin-gonic/gin"
+)
+
+func main() {
+	config := config.ServerConfig{}
+
+	// SECTION ENV variables
+
+	if !env.LoadEnv(&config) {
+		log.Fatal("Env error")
+		return
+	}
+
+	// SECTION Logger
+
+	if !logger.StartLogger(&config) {
+		log.Fatal("Logger error")
+		return
+	}
+
+	// SECTION Server
+
+	router := gin.Default()
+
+	config.LOGGER.Info("Starting server on localhost:" + config.PORT)
+
+	controller.ReaderController(&config, router)
+
+	router.Run("localhost:" + config.PORT)
+}
