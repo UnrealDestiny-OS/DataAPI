@@ -2,10 +2,10 @@ package main
 
 import (
 	"log"
-	"unrealDestiny/contractsReader/src/controller"
-	"unrealDestiny/contractsReader/src/utils/config"
-	"unrealDestiny/contractsReader/src/utils/env"
-	"unrealDestiny/contractsReader/src/utils/logger"
+	"unrealDestiny/dataAPI/src/controller"
+	"unrealDestiny/dataAPI/src/utils/config"
+	"unrealDestiny/dataAPI/src/utils/env"
+	"unrealDestiny/dataAPI/src/utils/logger"
 
 	"github.com/gin-gonic/gin"
 )

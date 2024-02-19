@@ -2,7 +2,7 @@ package logger
 
 import (
 	"log"
-	"unrealDestiny/contractsReader/src/utils/config"
+	"unrealDestiny/dataAPI/src/utils/config"
 
 	"go.uber.org/zap"
 )

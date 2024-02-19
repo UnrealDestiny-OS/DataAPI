@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"unrealDestiny/contractsReader/src/routers/users"
-	"unrealDestiny/contractsReader/src/utils/config"
+	"unrealDestiny/dataAPI/src/routers/users"
+	"unrealDestiny/dataAPI/src/utils/config"
 
 	"github.com/gin-gonic/gin"
 )

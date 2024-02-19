@@ -1,7 +1,7 @@
 package users
 
 import (
-	"unrealDestiny/contractsReader/src/utils/config"
+	"unrealDestiny/dataAPI/src/utils/config"
 )
 
 type UsersRouter struct {

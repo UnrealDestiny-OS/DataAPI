@@ -3,7 +3,7 @@ package env
 import (
 	"log"
 	"os"
-	"unrealDestiny/contractsReader/src/utils/config"
+	"unrealDestiny/dataAPI/src/utils/config"
 
 	"github.com/joho/godotenv"
 )
