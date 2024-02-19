@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 	"unrealDestiny/contractsReader/src/controller"
-	"unrealDestiny/contractsReader/src/modules/config"
-	"unrealDestiny/contractsReader/src/modules/env"
-	"unrealDestiny/contractsReader/src/modules/logger"
+	"unrealDestiny/contractsReader/src/utils/config"
+	"unrealDestiny/contractsReader/src/utils/env"
+	"unrealDestiny/contractsReader/src/utils/logger"
 
 	"github.com/gin-gonic/gin"
 )

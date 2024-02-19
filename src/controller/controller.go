@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"unrealDestiny/contractsReader/src/modules/config"
+	"unrealDestiny/contractsReader/src/utils/config"
 
 	"github.com/gin-gonic/gin"
 )

@@ -3,11 +3,16 @@ package env
 import (
 	"log"
 	"os"
-	"unrealDestiny/contractsReader/src/modules/config"
+	"unrealDestiny/contractsReader/src/utils/config"
 
 	"github.com/joho/godotenv"
 )
 
+// NOTE - LoadEnv (*ServerConfig)
+// Load all environmental variables using the dotenv library
+// All variables should be declares into the Server config struct
+// Then the LoadEnv function set all the information in their own variable
+// The ServerConfig Env variables should not change over the time
 func LoadEnv(serverConfig *config.ServerConfig) bool {
 	err := godotenv.Load(".env")
 

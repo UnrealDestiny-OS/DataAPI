@@ -2,11 +2,14 @@ package logger
 
 import (
 	"log"
-	"unrealDestiny/contractsReader/src/modules/config"
+	"unrealDestiny/contractsReader/src/utils/config"
 
 	"go.uber.org/zap"
 )
 
+// NOTE - StartLogger (*ServerConfig)
+// Loads the logger using the zap library
+// Then set it on the ServerConfig struct
 func StartLogger(serverConfig *config.ServerConfig) bool {
 	zLogger, zErr := zap.NewProduction()
 
