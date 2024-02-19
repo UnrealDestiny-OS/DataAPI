@@ -36,7 +36,7 @@ func main() {
 
 	// SECTION Database
 
-	database := database.InitDatabase(&config)
+	databaseClient, database := database.InitDatabase(&config)
 
 	if database == nil {
 		log.Fatal("Database error")
@@ -49,7 +49,7 @@ func main() {
 
 	config.LOGGER.Info("Starting server on localhost:" + config.PORT)
 
-	err := controller.CreateReaderController(&config, router, database)
+	err := controller.CreateReaderController(&config, router, databaseClient, database)
 
 	if err != nil {
 		config.LOGGER.Fatal("Routers errorr")

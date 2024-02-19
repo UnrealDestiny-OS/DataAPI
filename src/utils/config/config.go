@@ -22,5 +22,5 @@ type Router struct {
 	Path         string
 	ServerConfig *ServerConfig
 	MainRouter   *gin.Engine
-	MainDatabase *mongo.Client
+	MainDatabase *mongo.Database
 }

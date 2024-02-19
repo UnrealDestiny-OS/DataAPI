@@ -35,7 +35,7 @@ func (router *UsersRouter) CreateRoutes() error {
 	return nil
 }
 
-func (router *UsersRouter) Init(serverConfig *config.ServerConfig, mainRouter *gin.Engine, database *mongo.Client) {
+func (router *UsersRouter) Init(serverConfig *config.ServerConfig, mainRouter *gin.Engine, database *mongo.Database) {
 	router.router.ServerConfig = serverConfig
 	router.router.MainRouter = mainRouter
 	router.router.MainDatabase = database
@@ -44,7 +44,7 @@ func (router *UsersRouter) Init(serverConfig *config.ServerConfig, mainRouter *g
 	router.router.ServerConfig.LOGGER.Info("Starting Users router on " + router.router.Path)
 }
 
-func CreateUsersRouter(serverConfig *config.ServerConfig, router *gin.Engine, database *mongo.Client) *UsersRouter {
+func CreateUsersRouter(serverConfig *config.ServerConfig, router *gin.Engine, database *mongo.Database) *UsersRouter {
 	users := new(UsersRouter)
 	users.Init(serverConfig, router, database)
 	return users

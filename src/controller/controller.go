@@ -28,7 +28,7 @@ func (config *RoutersConfig) InitAllRoutes(serverConfig *config.ServerConfig) er
 
 // NOTE - CreateReaderController(*ServerConfig, *ginEngine)
 // Creates all the routers on the application, then manage it to saolve all the gin routes
-func CreateReaderController(serverConfig *config.ServerConfig, router *gin.Engine, database *mongo.Client) error {
+func CreateReaderController(serverConfig *config.ServerConfig, router *gin.Engine, databaseClient *mongo.Client, database *mongo.Database) error {
 	routers := RoutersConfig{
 		Users: users.CreateUsersRouter(serverConfig, router, database),
 	}

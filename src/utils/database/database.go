@@ -7,16 +7,16 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func InitDatabase(serverConfig *config.ServerConfig) *mongo.Client {
+func InitDatabase(serverConfig *config.ServerConfig) (*mongo.Client, *mongo.Database) {
 	client, err := mongo.Connect(serverConfig.CONTEXT, options.Client().ApplyURI(serverConfig.MONGO_CLIENT))
 
 	if err != nil {
-		return nil
+		return nil, nil
 	}
 
 	defer client.Disconnect(serverConfig.CONTEXT)
 
 	serverConfig.LOGGER.Info("Initialized database on " + serverConfig.MONGO_CLIENT)
 
-	return client
+	return client, client.Database("unrealDestinyData")
 }
