@@ -6,6 +6,7 @@ import (
 	"unrealDestiny/dataAPI/src/utils/config"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 var USERS_ROUTER_ERROR string = "Error starting the users router"
@@ -27,9 +28,9 @@ func (config *RoutersConfig) InitAllRoutes(serverConfig *config.ServerConfig) er
 
 // NOTE - CreateReaderController(*ServerConfig, *ginEngine)
 // Creates all the routers on the application, then manage it to saolve all the gin routes
-func CreateReaderController(serverConfig *config.ServerConfig, router *gin.Engine) error {
+func CreateReaderController(serverConfig *config.ServerConfig, router *gin.Engine, database *mongo.Client) error {
 	routers := RoutersConfig{
-		Users: users.CreateUsersRouter(serverConfig, router),
+		Users: users.CreateUsersRouter(serverConfig, router, database),
 	}
 
 	err := routers.InitAllRoutes(serverConfig)

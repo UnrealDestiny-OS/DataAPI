@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
 	"log"
+	"time"
 	"unrealDestiny/dataAPI/src/controller"
 	"unrealDestiny/dataAPI/src/utils/config"
+	"unrealDestiny/dataAPI/src/utils/database"
 	"unrealDestiny/dataAPI/src/utils/env"
 	"unrealDestiny/dataAPI/src/utils/logger"
 
@@ -11,7 +14,11 @@ import (
 )
 
 func main() {
-	config := config.ServerConfig{}
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
+	config := config.ServerConfig{
+		CONTEXT: ctx,
+	}
 
 	// SECTION ENV variables
 
@@ -27,13 +34,22 @@ func main() {
 		return
 	}
 
+	// SECTION Database
+
+	database := database.InitDatabase(&config)
+
+	if database == nil {
+		log.Fatal("Database error")
+		return
+	}
+
 	// SECTION Server
 
 	router := gin.Default()
 
 	config.LOGGER.Info("Starting server on localhost:" + config.PORT)
 
-	err := controller.CreateReaderController(&config, router)
+	err := controller.CreateReaderController(&config, router, database)
 
 	if err != nil {
 		config.LOGGER.Fatal("Routers errorr")

@@ -28,6 +28,12 @@ func LoadEnv(serverConfig *config.ServerConfig) bool {
 		return false
 	}
 
+	MONGO_CLIENT := os.Getenv("MONGO_URI")
+
+	if MONGO_CLIENT == "" {
+		return false
+	}
+
 	MTRG_CLIENT_IP := os.Getenv("MTRG_CLIENT_IP")
 
 	if MTRG_CLIENT_IP == "" {
@@ -36,6 +42,7 @@ func LoadEnv(serverConfig *config.ServerConfig) bool {
 
 	serverConfig.ENV = ENV
 	serverConfig.PORT = PORT
+	serverConfig.MONGO_CLIENT = MONGO_CLIENT
 	serverConfig.MTRG_CLIENT = MTRG_CLIENT_IP
 
 	log.Println("Starting Application on " + ENV + " environment")
