@@ -1,4 +1,4 @@
-module unrealDestiny/contractsReader
+module unrealDestiny/dataAPI
 
 go 1.21.6
 
