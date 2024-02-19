@@ -26,6 +26,16 @@ func GetAllUsers(context *gin.Context) {
 
 }
 
+func GetAllHolders(context *gin.Context) {
+
+}
+
+// NOTE - Upload all holders
+// One time method, it will include all validated holders on the database
+func UploadAllHolders(context *gin.Context) {
+
+}
+
 // SECTION - Router Main methods
 // All the methods related to the initialization or configuration
 // Normally this methods will be called from another core modules
