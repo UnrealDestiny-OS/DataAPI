@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	controller "unrealDestiny/contractsReader/src"
+	"unrealDestiny/contractsReader/src/controller"
 	"unrealDestiny/contractsReader/src/modules/config"
 	"unrealDestiny/contractsReader/src/modules/env"
 	"unrealDestiny/contractsReader/src/modules/logger"
