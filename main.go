@@ -35,5 +35,7 @@ func main() {
 
 	controller.CreateReaderController(&config, router)
 
-	router.Run("localhost:" + config.PORT)
+	if err := router.Run("localhost:" + config.PORT); err != nil {
+		log.Fatal(err)
+	}
 }
