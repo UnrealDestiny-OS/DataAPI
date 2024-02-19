@@ -8,3 +8,9 @@ type ServerConfig struct {
 	MTRG_CLIENT string
 	LOGGER      *zap.Logger
 }
+
+type Router struct {
+	Name         string
+	Path         string
+	ServerConfig *ServerConfig
+}

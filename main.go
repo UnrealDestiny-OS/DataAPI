@@ -33,7 +33,7 @@ func main() {
 
 	config.LOGGER.Info("Starting server on localhost:" + config.PORT)
 
-	controller.ReaderController(&config, router)
+	controller.CreateReaderController(&config, router)
 
 	router.Run("localhost:" + config.PORT)
 }

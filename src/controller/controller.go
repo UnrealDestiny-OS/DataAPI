@@ -1,11 +1,26 @@
 package controller
 
 import (
+	"unrealDestiny/contractsReader/src/routers/users"
 	"unrealDestiny/contractsReader/src/utils/config"
 
 	"github.com/gin-gonic/gin"
 )
 
-func ReaderController(serverConfig *config.ServerConfig, router *gin.Engine) {
+type RoutersConfig struct {
+	Users *users.UsersRouter
+}
 
+func (config *RoutersConfig) InitAllRoutes() {
+	config.Users.CreateRoutes()
+}
+
+// NOTE - CreateReaderController(*ServerConfig, *ginEngine)
+// Creates all the routers on the application, then manage it to saolve all the gin routes
+func CreateReaderController(serverConfig *config.ServerConfig, router *gin.Engine) {
+	routers := RoutersConfig{
+		Users: users.CreateUsersRouter(serverConfig),
+	}
+
+	routers.InitAllRoutes()
 }
