@@ -19,7 +19,7 @@ func (config *RoutersConfig) InitAllRoutes() {
 // Creates all the routers on the application, then manage it to saolve all the gin routes
 func CreateReaderController(serverConfig *config.ServerConfig, router *gin.Engine) {
 	routers := RoutersConfig{
-		Users: users.CreateUsersRouter(serverConfig),
+		Users: users.CreateUsersRouter(serverConfig, router),
 	}
 
 	routers.InitAllRoutes()

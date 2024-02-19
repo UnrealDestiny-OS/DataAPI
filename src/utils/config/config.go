@@ -1,6 +1,9 @@
 package config
 
-import "go.uber.org/zap"
+import (
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
+)
 
 type ServerConfig struct {
 	ENV         string
@@ -13,4 +16,5 @@ type Router struct {
 	Name         string
 	Path         string
 	ServerConfig *ServerConfig
+	MainRouter   *gin.Engine
 }
