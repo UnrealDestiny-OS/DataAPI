@@ -25,11 +25,3 @@ type UserHolder struct {
 
 var COLLECTION_HOLDERS = "users_holders"
 var COLLECTION_POSSIBLE_USERS = "users_possible"
-
-// type UserHolderData struct {
-// 	Address  string `json:"address,omitempty"`
-// 	Name     string `json:"name,omitempty"`
-// 	Holdings string `json:"amount,omitempty"`
-// 	Valid    string `json:"valid,omitempty"`
-// 	Network  string `json:"network,omitempty"`
-// }
