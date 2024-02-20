@@ -10,6 +10,7 @@ import (
 	"unrealDestiny/dataAPI/src/utils/env"
 	"unrealDestiny/dataAPI/src/utils/logger"
 
+	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gin-gonic/gin"
 )
 
@@ -43,13 +44,21 @@ func main() {
 		return
 	}
 
+	// SECTION ETH
+
+	client, err := ethclient.Dial(config.MTRG_WS_CLIENT)
+
+	if err != nil {
+		config.LOGGER.Fatal("ETH Client errorr")
+	}
+
 	// SECTION Server
 
 	router := gin.Default()
 
 	config.LOGGER.Info("Starting server on localhost:" + config.PORT)
 
-	err := controller.CreateReaderController(&config, router, databaseClient, database)
+	err = controller.CreateReaderController(&config, router, databaseClient, database, client)
 
 	if err != nil {
 		config.LOGGER.Fatal("Routers errorr")

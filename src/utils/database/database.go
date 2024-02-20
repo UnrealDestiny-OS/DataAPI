@@ -16,5 +16,5 @@ func InitDatabase(serverConfig *config.ServerConfig) (*mongo.Client, *mongo.Data
 
 	serverConfig.LOGGER.Info("Initialized database on " + serverConfig.MONGO_CLIENT)
 
-	return client, client.Database("unrealDestinyData")
+	return client, client.Database(serverConfig.MONGO_DATABASE)
 }

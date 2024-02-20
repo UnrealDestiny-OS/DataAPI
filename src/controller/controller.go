@@ -5,6 +5,7 @@ import (
 	"unrealDestiny/dataAPI/src/routers/users"
 	"unrealDestiny/dataAPI/src/utils/config"
 
+	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -28,7 +29,7 @@ func (config *RoutersConfig) InitAllRoutes(serverConfig *config.ServerConfig) er
 
 // NOTE - CreateReaderController(*ServerConfig, *ginEngine)
 // Creates all the routers on the application, then manage it to saolve all the gin routes
-func CreateReaderController(serverConfig *config.ServerConfig, router *gin.Engine, databaseClient *mongo.Client, database *mongo.Database) error {
+func CreateReaderController(serverConfig *config.ServerConfig, router *gin.Engine, databaseClient *mongo.Client, database *mongo.Database, client *ethclient.Client) error {
 	routers := RoutersConfig{
 		Users: users.CreateUsersRouter(serverConfig, router, database),
 	}

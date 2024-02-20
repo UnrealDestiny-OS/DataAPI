@@ -15,32 +15,15 @@ type UsersRouter struct {
 	router config.Router
 }
 
-// SECTION - Internal methods
-
-// NOTE - ParsedGet
-// Modify the initial Get function to add the router initial Path, in this case /<InitialRouterPath>/<NewRoutePath>
-func (router *UsersRouter) ParsedGet(path string, callback func(*gin.Context)) {
-	router.router.MainRouter.GET(router.router.Path+path, callback)
-}
-
-// NOTE - ParsedPost
-func (router *UsersRouter) ParsedPost(path string, callback func(*gin.Context)) {
-	router.router.MainRouter.POST(router.router.Path+path, callback)
-}
-
 // SECTION - REST API
 // Rest API methods
-
-func (router *UsersRouter) GetAllUsers(context *gin.Context) {
-
-}
 
 // NOTE - AddPossibleUser
 // GET Request, No Body, No params
 func (router *UsersRouter) GetPossibleUsers(c *gin.Context) {
 	possibleUsersCollection := router.router.MainDatabase.Collection(COLLECTION_POSSIBLE_USERS)
 
-	var users []PossibleUser
+	var users []UserStaticPossible
 
 	cursor, err := possibleUsersCollection.Find(context.TODO(), bson.M{})
 
@@ -61,8 +44,8 @@ func (router *UsersRouter) GetPossibleUsers(c *gin.Context) {
 // POST Request, Body *PossibleUser
 // Insert new possible user when the user reach the web page and connect the wallet to the site
 func (router *UsersRouter) AddPossibleUser(c *gin.Context) {
-	var user PossibleUser
-	var searchedUser PossibleUser
+	var user UserStaticPossible
+	var searchedUser UserStaticPossible
 
 	err := c.BindJSON(&user)
 
@@ -98,7 +81,7 @@ func (router *UsersRouter) AddPossibleUser(c *gin.Context) {
 func (router *UsersRouter) GetAllHolders(c *gin.Context) {
 	holdersCollection := router.router.MainDatabase.Collection(COLLECTION_HOLDERS)
 
-	var users []UserHolder
+	var users []UserStaticHolder
 
 	cursor, err := holdersCollection.Find(context.TODO(), bson.M{})
 
@@ -120,11 +103,9 @@ func (router *UsersRouter) GetAllHolders(c *gin.Context) {
 // Normally this methods will be called from another core modules
 
 func (router *UsersRouter) CreateRoutes() error {
-	router.ParsedGet("/all", router.GetAllUsers)
-	router.ParsedGet("/holders", router.GetAllHolders)
-	router.ParsedPost("/possible", router.AddPossibleUser)
-	router.ParsedGet("/possible", router.GetPossibleUsers)
-	// router.ParsedPost("/holders", router.UploadAllHolders)
+	router.router.ParsedGet("/holders", router.GetAllHolders)
+	router.router.ParsedPost("/possible", router.AddPossibleUser)
+	router.router.ParsedGet("/possible", router.GetPossibleUsers)
 	return nil
 }
 
