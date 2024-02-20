@@ -36,13 +36,29 @@ func (router *UsersRouter) GetAllUsers(context *gin.Context) {
 }
 
 // NOTE - AddPossibleUser
-// POST Request, Body
-//
-//	{
-//		"address": "0x",
-//	 	"connection": 100000
-//	}
-//
+// GET Request, No Body, No params
+func (router *UsersRouter) GetPossibleUsers(c *gin.Context) {
+	possibleUsersCollection := router.router.MainDatabase.Collection(COLLECTION_POSSIBLE_USERS)
+
+	var users []PossibleUser
+
+	cursor, err := possibleUsersCollection.Find(context.TODO(), bson.M{})
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true})
+		return
+	}
+
+	if err = cursor.All(context.TODO(), &users); err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true})
+		panic(err)
+	}
+
+	c.IndentedJSON(http.StatusOK, users)
+}
+
+// NOTE - AddPossibleUser
+// POST Request, Body *PossibleUser
 // Insert new possible user when the user reach the web page and connect the wallet to the site
 func (router *UsersRouter) AddPossibleUser(c *gin.Context) {
 	var user PossibleUser
@@ -168,8 +184,9 @@ func (router *UsersRouter) GetAllHolders(c *gin.Context) {
 
 func (router *UsersRouter) CreateRoutes() error {
 	router.ParsedGet("/all", router.GetAllUsers)
-	router.ParsedGet("/holders/all", router.GetAllHolders)
+	router.ParsedGet("/holders", router.GetAllHolders)
 	router.ParsedPost("/possible", router.AddPossibleUser)
+	router.ParsedGet("/possible", router.GetPossibleUsers)
 	// router.ParsedPost("/holders", router.UploadAllHolders)
 	return nil
 }
