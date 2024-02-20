@@ -2,6 +2,7 @@ package users
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"unrealDestiny/dataAPI/src/utils/config"
 
@@ -32,6 +33,47 @@ func (router *UsersRouter) ParsedPost(path string, callback func(*gin.Context)) 
 
 func (router *UsersRouter) GetAllUsers(context *gin.Context) {
 
+}
+
+// NOTE - AddPossibleUser
+// POST Request, Body
+//
+//	{
+//		"address": "0x",
+//	 	"connection": 100000
+//	}
+//
+// Insert new possible user when the user reach the web page and connect the wallet to the site
+func (router *UsersRouter) AddPossibleUser(c *gin.Context) {
+	var user PossibleUser
+	var searchedUser PossibleUser
+
+	err := c.BindJSON(&user)
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true})
+		fmt.Print(err)
+		return
+	}
+
+	possibleUsersCollection := router.router.MainDatabase.Collection(COLLECTION_POSSIBLE_USERS)
+
+	err = possibleUsersCollection.FindOne(context.TODO(), bson.M{"address": user.Address}).Decode(&searchedUser)
+
+	if err != mongo.ErrNoDocuments {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": "The user already exists"})
+		return
+	}
+
+	result, err := possibleUsersCollection.InsertOne(context.TODO(), user)
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true})
+		fmt.Print(err)
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, result)
 }
 
 // NOTE - GetAllHolders
@@ -127,6 +169,7 @@ func (router *UsersRouter) GetAllHolders(c *gin.Context) {
 func (router *UsersRouter) CreateRoutes() error {
 	router.ParsedGet("/all", router.GetAllUsers)
 	router.ParsedGet("/holders/all", router.GetAllHolders)
+	router.ParsedPost("/possible", router.AddPossibleUser)
 	// router.ParsedPost("/holders", router.UploadAllHolders)
 	return nil
 }

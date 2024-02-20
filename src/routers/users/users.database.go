@@ -9,6 +9,12 @@ type User struct {
 	Address string             `bson:"address"`
 }
 
+type PossibleUser struct {
+	ID         primitive.ObjectID `bson:"_id,omitempty"`
+	Address    string             `bson:"address"`
+	Connection int32              `bson:"connection"`
+}
+
 type UserHolder struct {
 	ID       primitive.ObjectID `bson:"_id,omitempty"`
 	Address  string             `bson:"address"`
@@ -17,7 +23,8 @@ type UserHolder struct {
 	Network  string             `bson:"network"`
 }
 
-var COLLECTION_HOLDERS = "holders"
+var COLLECTION_HOLDERS = "users_holders"
+var COLLECTION_POSSIBLE_USERS = "users_possible"
 
 // type UserHolderData struct {
 // 	Address  string `json:"address,omitempty"`
