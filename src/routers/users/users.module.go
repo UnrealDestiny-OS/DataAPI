@@ -1,9 +1,12 @@
 package users
 
 import (
+	"context"
+	"net/http"
 	"unrealDestiny/dataAPI/src/utils/config"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -31,8 +34,27 @@ func (router *UsersRouter) GetAllUsers(context *gin.Context) {
 
 }
 
-func (router *UsersRouter) GetAllHolders(context *gin.Context) {
+// NOTE - GetAllHolders
+// GET Request, No Body, No params
+// Return all users data on the holders database collection
+func (router *UsersRouter) GetAllHolders(c *gin.Context) {
+	holdersCollection := router.router.MainDatabase.Collection(COLLECTION_HOLDERS)
 
+	var users []UserHolder
+
+	cursor, err := holdersCollection.Find(context.TODO(), bson.M{})
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true})
+		return
+	}
+
+	if err = cursor.All(context.TODO(), &users); err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true})
+		panic(err)
+	}
+
+	c.IndentedJSON(http.StatusOK, users)
 }
 
 // NOTE - Upload all holders
@@ -74,7 +96,7 @@ func (router *UsersRouter) GetAllHolders(context *gin.Context) {
 // 	}
 //
 // 	if len(holders) > 0 {
-// 		holdersCollection := router.router.MainDatabase.Collection("holders")
+// 		holdersCollection := router.router.MainDatabase.Collection(HOLDERS_COLLECTION)
 // 		parsedHolders := []interface{}{}
 //
 // 		for i := 0; i < len(holders); i++ {
@@ -104,7 +126,7 @@ func (router *UsersRouter) GetAllHolders(context *gin.Context) {
 
 func (router *UsersRouter) CreateRoutes() error {
 	router.ParsedGet("/all", router.GetAllUsers)
-	router.ParsedGet("/holders/all", router.GetAllUsers)
+	router.ParsedGet("/holders/all", router.GetAllHolders)
 	// router.ParsedPost("/holders", router.UploadAllHolders)
 	return nil
 }

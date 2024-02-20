@@ -17,10 +17,12 @@ type UserHolder struct {
 	Network  string             `bson:"network"`
 }
 
-type UserHolderData struct {
-	Address  string `json:"address,omitempty"`
-	Name     string `json:"name,omitempty"`
-	Holdings string `json:"amount,omitempty"`
-	Valid    string `json:"valid,omitempty"`
-	Network  string `json:"network,omitempty"`
-}
+var COLLECTION_HOLDERS = "holders"
+
+// type UserHolderData struct {
+// 	Address  string `json:"address,omitempty"`
+// 	Name     string `json:"name,omitempty"`
+// 	Holdings string `json:"amount,omitempty"`
+// 	Valid    string `json:"valid,omitempty"`
+// 	Network  string `json:"network,omitempty"`
+// }
