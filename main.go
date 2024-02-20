@@ -65,7 +65,5 @@ func main() {
 		return
 	}
 
-	if err := router.Run("localhost:" + config.PORT); err != nil {
-		log.Fatal(err)
-	}
+	router.Run("localhost:" + config.PORT)
 }
