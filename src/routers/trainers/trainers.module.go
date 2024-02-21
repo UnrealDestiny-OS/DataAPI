@@ -11,6 +11,7 @@ import (
 	"unrealDestiny/dataAPI/src/utils/config"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gin-gonic/gin"
@@ -125,7 +126,7 @@ func (router *TrainersRouter) getUserTrainerByIndex(index int) (UserTrainer, err
 	result := userTrainersCollection.FindOne(context.TODO(), bson.M{"index": index})
 
 	if result.Err() == mongo.ErrNoDocuments {
-		return trainer, errors.New("invalid search")
+		return trainer, result.Err()
 	}
 
 	result.Decode(&trainer)
@@ -142,7 +143,7 @@ func (router *TrainersRouter) addNewUserTrainer(mintingEvent TrainerMinting) {
 	staticTrainer, err := router.getStaticTrainerDataByModel(int(mintingEvent.Model))
 
 	if err != nil {
-		router.router.ServerConfig.LOGGER.Fatal("Error getting te static trainer data")
+		router.router.ServerConfig.LOGGER.Error("Error getting te static trainer data")
 		return
 	}
 
@@ -166,7 +167,7 @@ func (router *TrainersRouter) addNewUserTrainer(mintingEvent TrainerMinting) {
 	_, err = userTrainersColection.InsertOne(context.TODO(), userTrainer)
 
 	if err != nil {
-		router.router.ServerConfig.LOGGER.Fatal("Error inserting the new trainer")
+		router.router.ServerConfig.LOGGER.Error("Error inserting the new trainer")
 		return
 	}
 
@@ -182,24 +183,43 @@ func (router *TrainersRouter) moveTrainerFromOwner(transferEvent TrainerTransfer
 	searchedUserTrainer, err := router.getUserTrainerByIndex(int(transferEvent.Token.Int64()))
 
 	if err != nil {
-		router.router.ServerConfig.LOGGER.Fatal("Invalid searched trainer")
+		if err == mongo.ErrNoDocuments {
+			router.router.ServerConfig.LOGGER.Info("Not offchain trainer detected, generating new one offchain")
+
+			instance, err := trainers_contract.NewTrainers(common.HexToAddress(CONTRACT_TRAINERS_ERC721), router.router.ETHCLient)
+
+			if err != nil {
+				router.router.ServerConfig.LOGGER.Error("Error creating the trainers contract instance")
+			}
+
+			model, err := instance.TokenModel(&bind.CallOpts{}, transferEvent.Token)
+
+			if err != nil {
+				router.router.ServerConfig.LOGGER.Error("Error Searching the trainer model on the contract")
+			}
+
+			router.addNewUserTrainer(TrainerMinting{Model: uint16(model.Int64()), Token: transferEvent.Token, To: transferEvent.To})
+
+		} else {
+			router.router.ServerConfig.LOGGER.Error("Invalid searched trainer")
+		}
 		return
 	}
 
 	if searchedUserTrainer.Wallet != string(transferEvent.From.String()) {
-		router.router.ServerConfig.LOGGER.Fatal("Invalid trainer owner")
+		router.router.ServerConfig.LOGGER.Error("Invalid trainer owner")
 		return
 	}
 
-	result, err := userTrainersCollection.UpdateOne(context.TODO(), bson.M{"index": int(transferEvent.Token.Int64())}, bson.M{"$set": bson.M{"Wallet": transferEvent.To.String()}})
+	result, err := userTrainersCollection.UpdateOne(context.TODO(), bson.M{"index": int(transferEvent.Token.Int64())}, bson.M{"$set": bson.M{"wallet": transferEvent.To.String()}})
 
 	if err != nil {
-		router.router.ServerConfig.LOGGER.Fatal("Error updating the trainer owner")
+		router.router.ServerConfig.LOGGER.Error("Error updating the trainer owner")
 		return
 	}
 
 	if result.ModifiedCount > 0 {
-		router.router.ServerConfig.LOGGER.Fatal("Updated Trainer owner")
+		router.router.ServerConfig.LOGGER.Info("Updated Trainer owner")
 	}
 }
 
@@ -229,7 +249,7 @@ func (router *TrainersRouter) initChainListeners() {
 		for {
 			select {
 			case <-sub.Err():
-				router.router.ServerConfig.LOGGER.Fatal("Error reading the subscription logs")
+				router.router.ServerConfig.LOGGER.Error("Error reading the subscription logs")
 			case vLog := <-logs:
 				if IsTransfer(vLog.Topics[0]) {
 					var transferEvent TrainerTransfer
@@ -250,25 +270,25 @@ func (router *TrainersRouter) initChainListeners() {
 					mintTrainerInterface, err := contractAbi.Unpack("MintTrainer", vLog.Data)
 
 					if err != nil {
-						router.router.ServerConfig.LOGGER.Fatal("Error unpacking mint trainer data")
+						router.router.ServerConfig.LOGGER.Error("Error unpacking mint trainer data")
 					}
 
 					mintEvent.Model, ok = mintTrainerInterface[0].(uint16)
 
 					if !ok {
-						router.router.ServerConfig.LOGGER.Fatal("Error parsing the trainer minting event data (Model)")
+						router.router.ServerConfig.LOGGER.Error("Error parsing the trainer minting event data (Model)")
 					}
 
 					mintEvent.Token, ok = mintTrainerInterface[1].(*big.Int)
 
 					if !ok {
-						router.router.ServerConfig.LOGGER.Fatal("Error parsing the trainer minting event data (Token)")
+						router.router.ServerConfig.LOGGER.Error("Error parsing the trainer minting event data (Token)")
 					}
 
 					mintEvent.To, ok = mintTrainerInterface[2].(common.Address)
 
 					if !ok {
-						router.router.ServerConfig.LOGGER.Fatal("Error parsing the trainer minting event data (To)")
+						router.router.ServerConfig.LOGGER.Error("Error parsing the trainer minting event data (To)")
 					}
 
 					router.addNewUserTrainer(mintEvent)
