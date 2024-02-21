@@ -9,6 +9,7 @@ import (
 	"unrealDestiny/dataAPI/src/utils/database"
 	"unrealDestiny/dataAPI/src/utils/env"
 	"unrealDestiny/dataAPI/src/utils/logger"
+	"unrealDestiny/dataAPI/src/utils/network"
 
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gin-gonic/gin"
@@ -55,6 +56,8 @@ func main() {
 	// SECTION Server
 
 	router := gin.Default()
+
+	router.Use(network.CORSMiddleware())
 
 	config.LOGGER.Info("Starting server on localhost:" + config.PORT)
 

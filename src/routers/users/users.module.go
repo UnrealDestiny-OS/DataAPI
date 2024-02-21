@@ -2,11 +2,16 @@ package users
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"unrealDestiny/dataAPI/src/utils/config"
 
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/math"
+	"github.com/ethereum/go-ethereum/signer/core/apitypes"
 	"github.com/gin-gonic/gin"
+	"github.com/storyicon/sigverify"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -34,7 +39,7 @@ func (router *UsersRouter) GetPossibleUsers(c *gin.Context) {
 
 	if err = cursor.All(context.TODO(), &users); err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true})
-		panic(err)
+		return
 	}
 
 	c.IndentedJSON(http.StatusOK, users)
@@ -68,7 +73,6 @@ func (router *UsersRouter) AddPossibleUser(c *gin.Context) {
 
 	if err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true})
-		fmt.Print(err)
 		return
 	}
 
@@ -92,10 +96,73 @@ func (router *UsersRouter) GetAllHolders(c *gin.Context) {
 
 	if err = cursor.All(context.TODO(), &users); err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true})
-		panic(err)
+		return
 	}
 
 	c.IndentedJSON(http.StatusOK, users)
+}
+
+// SECTION - Profiles
+// Users profiles
+
+func (router *UsersRouter) createProfileUsingSign(c *gin.Context) {
+	var createProfileRequest APICreateUserProfile
+
+	err := c.BindJSON(&createProfileRequest)
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true})
+		return
+	}
+
+	domain := apitypes.TypedDataDomain{
+		Name:              "unrealdestinycom",
+		Version:           "1",
+		ChainId:           math.NewHexOrDecimal256(createProfileRequest.CreationChain),
+		VerifyingContract: "0x0000000000000000000000000000000000000000",
+	}
+
+	types := apitypes.Types{
+		"EIP712Domain": {
+			{Name: "name", Type: "string"},
+			{Name: "version", Type: "string"},
+			{Name: "chainId", Type: "uint256"},
+			{Name: "verifyingContract", Type: "address"},
+		},
+		"Request": {
+			{Name: "wallet", Type: "address"},
+			{Name: "chain", Type: "uint256"},
+			{Name: "username", Type: "string"},
+		},
+	}
+
+	message := SignCreateUserRequest{
+		Wallet:   common.HexToAddress(createProfileRequest.Wallet),
+		Username: createProfileRequest.Username,
+		Chain:    int(createProfileRequest.CreationChain),
+	}
+
+	typedData := apitypes.TypedData{
+		Types:       types,
+		PrimaryType: "ERC721Order",
+		Domain:      domain,
+		Message:     message,
+	}
+
+	if err := json.Unmarshal([]byte(userData), &typedData); err != nil {
+		panic(err)
+	}
+
+	fmt.Println(userData)
+
+	valid, err := sigverify.VerifyTypedDataHexSignatureEx(
+		common.HexToAddress(createProfileRequest.Wallet),
+		typedData,
+		createProfileRequest.Sign,
+	)
+
+	fmt.Println(valid, err)
+
 }
 
 // SECTION - Router Main methods
@@ -106,6 +173,8 @@ func (router *UsersRouter) CreateRoutes() error {
 	router.router.ParsedGet("/holders", router.GetAllHolders)
 	router.router.ParsedPost("/possible", router.AddPossibleUser)
 	router.router.ParsedGet("/possible", router.GetPossibleUsers)
+	// router.router.ParsedGet("/profile/:wallet", router.GetPossibleUsers)
+	router.router.ParsedPost("/profile", router.createProfileUsingSign)
 	return nil
 }
 

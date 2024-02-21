@@ -1,6 +1,7 @@
 package users
 
 import (
+	"github.com/ethereum/go-ethereum/common"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -16,6 +17,32 @@ type UserStaticHolder struct {
 	Holdings string             `bson:"holdings"`
 	Valid    bool               `bson:"valid"`
 	Network  string             `bson:"network"`
+}
+
+type UserProfile struct {
+	ID         primitive.ObjectID `bson:"_id,omitempty"`
+	Wallet     string             `bson:"wallet"`
+	Name       string             `bson:"name"`
+	UDT        int64              `bson:"UDT"`
+	FUDT       int64              `bson:"FUDT"`
+	Level      int64              `bson:"level"`
+	Experience int64              `bson:"experience"`
+	Chain      int64              `bson:"chain"`
+}
+
+// SECTION -API Requests Types
+
+type APICreateUserProfile struct {
+	Username      string `json:"username"`
+	Wallet        string `json:"wallet"`
+	Sign          string `json:"sign"`
+	CreationChain int64  `json:"chain"`
+}
+
+type SignCreateUserRequest struct {
+	Wallet   common.Address
+	Chain    int
+	Username string
 }
 
 var COLLECTION_HOLDERS = "static-users-holders"
