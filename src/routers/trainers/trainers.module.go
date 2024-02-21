@@ -2,6 +2,7 @@ package trainers
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"sync"
 	"unrealDestiny/dataAPI/src/utils/config"
@@ -10,6 +11,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -38,11 +40,51 @@ func (router *TrainersRouter) GetStaticTrainers(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, results)
 }
 
-func (router *TrainersRouter) AddNewTrainer(c *gin.Context) {
+func (router *TrainersRouter) GetStaticTrainer(c *gin.Context) {
+	trainer, err := router.getStaticTrainerData(c.Param("id"))
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": err.Error()})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, trainer)
+}
+
+func (router *TrainersRouter) getStaticTrainerData(id string) (TrainerStatic, error) {
+	var trainer TrainerStatic
+
+	staticTrainersCollection := router.router.MainDatabase.Collection(COLLECTION_STATIC_TRAINERS)
+
+	objectId, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		return trainer, errors.New("invalid trainer ID")
+	}
+
+	result := staticTrainersCollection.FindOne(context.TODO(), bson.M{"_id": objectId})
+
+	if result.Err() == mongo.ErrNoDocuments {
+		return trainer, errors.New("invalid search")
+	}
+
+	result.Decode(&trainer)
+
+	return trainer, nil
+}
+
+func (router *TrainersRouter) addNewUserTrainer(transferEvent TrainerTransfer) {
 
 }
 
-func (router *TrainersRouter) InitChainListeners() {
+// NOTE - moveTrainerFromOwner(transferEvent)
+// Will works to change the owner of the traner when someone executes a transaction on chain
+// It is neccessary to change the owner on the offchain interfaces and systems
+func (router *TrainersRouter) moveTrainerFromOwner(transferEvent TrainerTransfer) {
+	_ = router.router.MainDatabase.Collection(COLLECTION_USER_TRAINERS)
+}
+
+func (router *TrainersRouter) initChainListeners() {
 	router.router.ServerConfig.LOGGER.Info("Starting Trainers OnChain Listeners")
 
 	logs, sub, err := SubcribeToTransfers(router.router.ETHCLient)
@@ -72,10 +114,9 @@ func (router *TrainersRouter) InitChainListeners() {
 					router.router.ServerConfig.LOGGER.Info("Detected Trainer Transfer")
 
 					if transferEvent.From.String() == "0x0000000000000000000000000000000000000000" {
-						//New Trainer
-
+						router.addNewUserTrainer(transferEvent)
 					} else {
-						// Old trainer new Owner
+						router.moveTrainerFromOwner(transferEvent)
 					}
 				}
 			}
@@ -83,7 +124,6 @@ func (router *TrainersRouter) InitChainListeners() {
 	}(i, &wg)
 
 	wg.Wait()
-
 }
 
 // SECTION - Router Main methods
@@ -91,7 +131,8 @@ func (router *TrainersRouter) InitChainListeners() {
 // Normally this methods will be called from another core modules
 
 func (router *TrainersRouter) CreateRoutes() error {
-	router.router.ParsedGet("/staticTrainers", router.GetStaticTrainers)
+	router.router.ParsedGet("/static", router.GetStaticTrainers)
+	router.router.ParsedGet("/static/:id", router.GetStaticTrainer)
 	return nil
 }
 
@@ -107,7 +148,7 @@ func (router *TrainersRouter) Init(serverConfig *config.ServerConfig, mainRouter
 func (router *TrainersRouter) InitETH(client *ethclient.Client) {
 	router.router.ETHCLient = client
 	router.router.ServerConfig.LOGGER.Info("Starting Trainers ETH CLient on " + router.router.Path)
-	router.InitChainListeners()
+	router.initChainListeners()
 }
 
 func CreateRouter(serverConfig *config.ServerConfig, router *gin.Engine, database *mongo.Database, client *ethclient.Client) *TrainersRouter {

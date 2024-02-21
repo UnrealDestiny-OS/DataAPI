@@ -39,3 +39,4 @@ type UserTrainer struct {
 }
 
 var COLLECTION_STATIC_TRAINERS = "static-trainers"
+var COLLECTION_USER_TRAINERS = "static-trainers"

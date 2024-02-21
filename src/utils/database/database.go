@@ -14,7 +14,7 @@ func InitDatabase(serverConfig *config.ServerConfig) (*mongo.Client, *mongo.Data
 		return nil, nil
 	}
 
-	serverConfig.LOGGER.Info("Initialized database on " + serverConfig.MONGO_CLIENT)
+	serverConfig.LOGGER.Info("Initialized database on " + serverConfig.MONGO_CLIENT + "" + serverConfig.MONGO_DATABASE)
 
 	return client, client.Database(serverConfig.MONGO_DATABASE)
 }

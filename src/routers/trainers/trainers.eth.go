@@ -36,5 +36,4 @@ func SubcribeToTransfers(client *ethclient.Client) (chan types.Log, ethereum.Sub
 	sub, err := client.SubscribeFilterLogs(context.Background(), query, logs)
 
 	return logs, sub, err
-
 }
