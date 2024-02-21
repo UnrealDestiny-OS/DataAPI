@@ -3,10 +3,14 @@ package trainers
 import (
 	"context"
 	"errors"
+	"math/big"
 	"net/http"
+	"strings"
 	"sync"
+	trainers_contract "unrealDestiny/dataAPI/src/routers/trainers/contract"
 	"unrealDestiny/dataAPI/src/utils/config"
 
+	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gin-gonic/gin"
@@ -22,25 +26,49 @@ type TrainersRouter struct {
 // SECTION - REST API
 // Rest API methods
 
-func (router *TrainersRouter) GetStaticTrainers(c *gin.Context) {
+func (router *TrainersRouter) getStaticTrainers(c *gin.Context) {
 	staticTrainersCollection := router.router.MainDatabase.Collection(COLLECTION_STATIC_TRAINERS)
 
 	cursor, err := staticTrainersCollection.Find(context.TODO(), bson.D{})
 
 	if err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true})
+		return
 	}
 
 	var results []TrainerStatic
 
 	if err = cursor.All(context.TODO(), &results); err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true})
+		return
 	}
 
 	c.IndentedJSON(http.StatusOK, results)
 }
 
-func (router *TrainersRouter) GetStaticTrainer(c *gin.Context) {
+func (router *TrainersRouter) getUserTrainers(c *gin.Context) {
+	walletAddress := c.Param("address")
+
+	staticTrainersCollection := router.router.MainDatabase.Collection(COLLECTION_USER_TRAINERS)
+
+	cursor, err := staticTrainersCollection.Find(context.TODO(), bson.M{"wallet": walletAddress})
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true})
+		return
+	}
+
+	var results []UserTrainer
+
+	if err = cursor.All(context.TODO(), &results); err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, results)
+}
+
+func (router *TrainersRouter) getStaticTrainer(c *gin.Context) {
 	trainer, err := router.getStaticTrainerData(c.Param("id"))
 
 	if err != nil {
@@ -73,15 +101,106 @@ func (router *TrainersRouter) getStaticTrainerData(id string) (TrainerStatic, er
 	return trainer, nil
 }
 
-func (router *TrainersRouter) addNewUserTrainer(transferEvent TrainerTransfer) {
+func (router *TrainersRouter) getStaticTrainerDataByModel(model int) (TrainerStatic, error) {
+	var trainer TrainerStatic
 
+	staticTrainersCollection := router.router.MainDatabase.Collection(COLLECTION_STATIC_TRAINERS)
+
+	result := staticTrainersCollection.FindOne(context.TODO(), bson.M{"model": model})
+
+	if result.Err() == mongo.ErrNoDocuments {
+		return trainer, errors.New("invalid search")
+	}
+
+	result.Decode(&trainer)
+
+	return trainer, nil
+}
+
+func (router *TrainersRouter) getUserTrainerByIndex(index int) (UserTrainer, error) {
+	var trainer UserTrainer
+
+	userTrainersCollection := router.router.MainDatabase.Collection(COLLECTION_USER_TRAINERS)
+
+	result := userTrainersCollection.FindOne(context.TODO(), bson.M{"index": index})
+
+	if result.Err() == mongo.ErrNoDocuments {
+		return trainer, errors.New("invalid search")
+	}
+
+	result.Decode(&trainer)
+
+	return trainer, nil
+}
+
+// NOTE - addNewUserTrainer(mintingEvent)
+// It will generate a new trainer and insert it on the database like document
+// It should be execute when the contract launches a new MintTrainer event
+func (router *TrainersRouter) addNewUserTrainer(mintingEvent TrainerMinting) {
+	var userTrainer UserTrainer
+
+	staticTrainer, err := router.getStaticTrainerDataByModel(int(mintingEvent.Model))
+
+	if err != nil {
+		router.router.ServerConfig.LOGGER.Fatal("Error getting te static trainer data")
+		return
+	}
+
+	userTrainer.Type = staticTrainer.Type
+	userTrainer.Model = staticTrainer.Model
+	userTrainer.Experience = 0
+	userTrainer.Level = 1
+	userTrainer.Health = staticTrainer.Health
+	userTrainer.Speed = staticTrainer.Speed
+	userTrainer.Energy = staticTrainer.Energy
+	userTrainer.Defense = staticTrainer.Defense
+	userTrainer.Attack = staticTrainer.Attack
+	userTrainer.Builder = staticTrainer.Builder
+	userTrainer.Name = staticTrainer.Name
+	userTrainer.Network = staticTrainer.Network
+	userTrainer.Wallet = mintingEvent.To.String()
+	userTrainer.Index = int32(mintingEvent.Token.Int64())
+
+	userTrainersColection := router.router.MainDatabase.Collection(COLLECTION_USER_TRAINERS)
+
+	_, err = userTrainersColection.InsertOne(context.TODO(), userTrainer)
+
+	if err != nil {
+		router.router.ServerConfig.LOGGER.Fatal("Error inserting the new trainer")
+		return
+	}
+
+	router.router.ServerConfig.LOGGER.Info("New inserted user trainer (" + userTrainer.Wallet + ")")
 }
 
 // NOTE - moveTrainerFromOwner(transferEvent)
 // Will works to change the owner of the traner when someone executes a transaction on chain
 // It is neccessary to change the owner on the offchain interfaces and systems
 func (router *TrainersRouter) moveTrainerFromOwner(transferEvent TrainerTransfer) {
-	_ = router.router.MainDatabase.Collection(COLLECTION_USER_TRAINERS)
+	userTrainersCollection := router.router.MainDatabase.Collection(COLLECTION_USER_TRAINERS)
+
+	searchedUserTrainer, err := router.getUserTrainerByIndex(int(transferEvent.Token.Int64()))
+
+	if err != nil {
+		router.router.ServerConfig.LOGGER.Fatal("Invalid searched trainer")
+		return
+	}
+
+	if searchedUserTrainer.Wallet != string(transferEvent.From.String()) {
+		router.router.ServerConfig.LOGGER.Fatal("Invalid trainer owner")
+		return
+	}
+
+	result, err := userTrainersCollection.UpdateOne(context.TODO(), bson.M{"index": int(transferEvent.Token.Int64())}, bson.M{"$set": bson.M{"Wallet": transferEvent.To.String()}})
+
+	if err != nil {
+		router.router.ServerConfig.LOGGER.Fatal("Error updating the trainer owner")
+		return
+	}
+
+	if result.ModifiedCount > 0 {
+		router.router.ServerConfig.LOGGER.Fatal("Updated Trainer owner")
+	}
 }
 
 func (router *TrainersRouter) initChainListeners() {
@@ -91,6 +210,14 @@ func (router *TrainersRouter) initChainListeners() {
 
 	if err != nil {
 		router.router.ServerConfig.LOGGER.Fatal("Trainers Query subscription error")
+		return
+	}
+
+	contractAbi, err := abi.JSON(strings.NewReader(string(trainers_contract.TrainersABI)))
+
+	if err != nil {
+		router.router.ServerConfig.LOGGER.Fatal("Error parsing the contract ABI")
+		return
 	}
 
 	var wg sync.WaitGroup
@@ -113,11 +240,38 @@ func (router *TrainersRouter) initChainListeners() {
 
 					router.router.ServerConfig.LOGGER.Info("Detected Trainer Transfer")
 
-					if transferEvent.From.String() == "0x0000000000000000000000000000000000000000" {
-						router.addNewUserTrainer(transferEvent)
-					} else {
+					if transferEvent.From.String() != "0x0000000000000000000000000000000000000000" {
 						router.moveTrainerFromOwner(transferEvent)
 					}
+				} else if IsNewMint(vLog.Topics[0]) {
+					var mintEvent TrainerMinting
+					var ok bool
+
+					mintTrainerInterface, err := contractAbi.Unpack("MintTrainer", vLog.Data)
+
+					if err != nil {
+						router.router.ServerConfig.LOGGER.Fatal("Error unpacking mint trainer data")
+					}
+
+					mintEvent.Model, ok = mintTrainerInterface[0].(uint16)
+
+					if !ok {
+						router.router.ServerConfig.LOGGER.Fatal("Error parsing the trainer minting event data (Model)")
+					}
+
+					mintEvent.Token, ok = mintTrainerInterface[1].(*big.Int)
+
+					if !ok {
+						router.router.ServerConfig.LOGGER.Fatal("Error parsing the trainer minting event data (Token)")
+					}
+
+					mintEvent.To, ok = mintTrainerInterface[2].(common.Address)
+
+					if !ok {
+						router.router.ServerConfig.LOGGER.Fatal("Error parsing the trainer minting event data (To)")
+					}
+
+					router.addNewUserTrainer(mintEvent)
 				}
 			}
 		}
@@ -131,8 +285,9 @@ func (router *TrainersRouter) initChainListeners() {
 // Normally this methods will be called from another core modules
 
 func (router *TrainersRouter) CreateRoutes() error {
-	router.router.ParsedGet("/static", router.GetStaticTrainers)
-	router.router.ParsedGet("/static/:id", router.GetStaticTrainer)
+	router.router.ParsedGet("/static", router.getStaticTrainers)
+	router.router.ParsedGet("/static/:id", router.getStaticTrainer)
+	router.router.ParsedGet("/user/:address", router.getUserTrainers)
 	return nil
 }
 
