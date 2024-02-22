@@ -2,14 +2,10 @@ package users
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"net/http"
 	"unrealDestiny/dataAPI/src/utils/config"
 
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/signer/core/apitypes"
 	"github.com/gin-gonic/gin"
 	"github.com/storyicon/sigverify"
 	"go.mongodb.org/mongo-driver/bson"
@@ -25,7 +21,7 @@ type UsersRouter struct {
 
 // NOTE - AddPossibleUser
 // GET Request, No Body, No params
-func (router *UsersRouter) GetPossibleUsers(c *gin.Context) {
+func (router *UsersRouter) getPossibleUsers(c *gin.Context) {
 	possibleUsersCollection := router.router.MainDatabase.Collection(COLLECTION_POSSIBLE_USERS)
 
 	var users []UserStaticPossible
@@ -33,12 +29,12 @@ func (router *UsersRouter) GetPossibleUsers(c *gin.Context) {
 	cursor, err := possibleUsersCollection.Find(context.TODO(), bson.M{})
 
 	if err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": USERS_ERROR_DATABASE_ERROR})
 		return
 	}
 
 	if err = cursor.All(context.TODO(), &users); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": USERS_ERROR_PARSING})
 		return
 	}
 
@@ -48,15 +44,14 @@ func (router *UsersRouter) GetPossibleUsers(c *gin.Context) {
 // NOTE - AddPossibleUser
 // POST Request, Body *PossibleUser
 // Insert new possible user when the user reach the web page and connect the wallet to the site
-func (router *UsersRouter) AddPossibleUser(c *gin.Context) {
+func (router *UsersRouter) addPossibleUser(c *gin.Context) {
 	var user UserStaticPossible
 	var searchedUser UserStaticPossible
 
 	err := c.BindJSON(&user)
 
 	if err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true})
-		fmt.Print(err)
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": USERS_ERROR_PARSING})
 		return
 	}
 
@@ -65,14 +60,14 @@ func (router *UsersRouter) AddPossibleUser(c *gin.Context) {
 	err = possibleUsersCollection.FindOne(context.TODO(), bson.M{"address": user.Address}).Decode(&searchedUser)
 
 	if err != mongo.ErrNoDocuments {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": "The user already exists"})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": USERS_ERROR_THE_USER_EXISTS})
 		return
 	}
 
 	result, err := possibleUsersCollection.InsertOne(context.TODO(), user)
 
 	if err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": USERS_ERROR_INSERT_DATABASE_ERROR})
 		return
 	}
 
@@ -82,7 +77,7 @@ func (router *UsersRouter) AddPossibleUser(c *gin.Context) {
 // NOTE - GetAllHolders
 // GET Request, No Body, No params
 // Return all users data on the holders database collection
-func (router *UsersRouter) GetAllHolders(c *gin.Context) {
+func (router *UsersRouter) getAllHolders(c *gin.Context) {
 	holdersCollection := router.router.MainDatabase.Collection(COLLECTION_HOLDERS)
 
 	var users []UserStaticHolder
@@ -90,12 +85,12 @@ func (router *UsersRouter) GetAllHolders(c *gin.Context) {
 	cursor, err := holdersCollection.Find(context.TODO(), bson.M{})
 
 	if err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": USERS_ERROR_DATABASE_ERROR})
 		return
 	}
 
 	if err = cursor.All(context.TODO(), &users); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": USERS_ERROR_PARSING})
 		return
 	}
 
@@ -105,64 +100,65 @@ func (router *UsersRouter) GetAllHolders(c *gin.Context) {
 // SECTION - Profiles
 // Users profiles
 
+// NOTE - createProfileUsingSign
+// Create new user profile using the signature verification
+// The new user will be created only if the signature is valid compared with the sent wallet address
 func (router *UsersRouter) createProfileUsingSign(c *gin.Context) {
 	var createProfileRequest APICreateUserProfile
 
 	err := c.BindJSON(&createProfileRequest)
 
 	if err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": USERS_ERROR_PARSING})
 		return
 	}
 
-	domain := apitypes.TypedDataDomain{
-		Name:              "unrealdestinycom",
-		Version:           "1",
-		ChainId:           math.NewHexOrDecimal256(createProfileRequest.CreationChain),
-		VerifyingContract: "0x0000000000000000000000000000000000000000",
-	}
-
-	types := apitypes.Types{
-		"EIP712Domain": {
-			{Name: "name", Type: "string"},
-			{Name: "version", Type: "string"},
-			{Name: "chainId", Type: "uint256"},
-			{Name: "verifyingContract", Type: "address"},
-		},
-		"Request": {
-			{Name: "wallet", Type: "address"},
-			{Name: "chain", Type: "uint256"},
-			{Name: "username", Type: "string"},
-		},
-	}
-
-	message := SignCreateUserRequest{
-		Wallet:   common.HexToAddress(createProfileRequest.Wallet),
-		Username: createProfileRequest.Username,
-		Chain:    int(createProfileRequest.CreationChain),
-	}
-
-	typedData := apitypes.TypedData{
-		Types:       types,
-		PrimaryType: "ERC721Order",
-		Domain:      domain,
-		Message:     message,
-	}
-
-	if err := json.Unmarshal([]byte(userData), &typedData); err != nil {
-		panic(err)
-	}
-
-	fmt.Println(userData)
-
-	valid, err := sigverify.VerifyTypedDataHexSignatureEx(
+	valid, err := sigverify.VerifyEllipticCurveHexSignatureEx(
 		common.HexToAddress(createProfileRequest.Wallet),
-		typedData,
+		[]byte(GenerateSignValidationMessage(createProfileRequest.Wallet, int(createProfileRequest.CreationChain))),
 		createProfileRequest.Sign,
 	)
 
-	fmt.Println(valid, err)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": USERS_ERROR_ON_SING_VERIFICATION})
+		return
+	}
 
+	if !valid {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": USERS_ERROR_INVALID_SIGN})
+		return
+	}
+
+	user := UserProfile{
+		Wallet:     createProfileRequest.Wallet,
+		Name:       createProfileRequest.Username,
+		UDT:        0,
+		FUDT:       0,
+		Level:      1,
+		Experience: 0,
+		Chain:      createProfileRequest.CreationChain,
+	}
+
+	var searchedUser UserProfile
+
+	profilesCollection := router.router.MainDatabase.Collection(COLLECTION_USER_PROFILES)
+
+	err = profilesCollection.FindOne(context.TODO(), bson.M{"wallet": createProfileRequest.Wallet}).Decode(&searchedUser)
+
+	if err != mongo.ErrNoDocuments {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": USERS_ERROR_THE_USER_EXISTS})
+		return
+	}
+
+	result, err := profilesCollection.InsertOne(context.TODO(), user)
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": USERS_ERROR_INSERT_DATABASE_ERROR})
+		return
+	}
+
+	router.router.ServerConfig.LOGGER.Info("New user profile " + createProfileRequest.Username)
+	c.IndentedJSON(http.StatusOK, result)
 }
 
 // SECTION - Router Main methods
@@ -170,10 +166,9 @@ func (router *UsersRouter) createProfileUsingSign(c *gin.Context) {
 // Normally this methods will be called from another core modules
 
 func (router *UsersRouter) CreateRoutes() error {
-	router.router.ParsedGet("/holders", router.GetAllHolders)
-	router.router.ParsedPost("/possible", router.AddPossibleUser)
-	router.router.ParsedGet("/possible", router.GetPossibleUsers)
-	// router.router.ParsedGet("/profile/:wallet", router.GetPossibleUsers)
+	router.router.ParsedGet("/holders", router.getAllHolders)
+	router.router.ParsedPost("/possible", router.addPossibleUser)
+	router.router.ParsedGet("/possible", router.getPossibleUsers)
 	router.router.ParsedPost("/profile", router.createProfileUsingSign)
 	return nil
 }

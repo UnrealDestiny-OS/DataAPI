@@ -5,6 +5,7 @@ import (
 	"errors"
 	"math/big"
 	"net/http"
+	"strconv"
 	"strings"
 	"sync"
 	trainers_contract "unrealDestiny/dataAPI/src/routers/trainers/contract"
@@ -190,19 +191,29 @@ func (router *TrainersRouter) moveTrainerFromOwner(transferEvent TrainerTransfer
 
 			if err != nil {
 				router.router.ServerConfig.LOGGER.Error("Error creating the trainers contract instance")
+				return
 			}
 
-			model, err := instance.TokenModel(&bind.CallOpts{}, transferEvent.Token)
+			model, err := instance.Model(&bind.CallOpts{}, transferEvent.Token)
 
 			if err != nil {
 				router.router.ServerConfig.LOGGER.Error("Error Searching the trainer model on the contract")
+				return
 			}
 
-			router.addNewUserTrainer(TrainerMinting{Model: uint16(model.Int64()), Token: transferEvent.Token, To: transferEvent.To})
+			parsedModel, err := strconv.Atoi(model)
+
+			if err != nil {
+				router.router.ServerConfig.LOGGER.Error("Error parsing the trainer model")
+				return
+			}
+
+			router.addNewUserTrainer(TrainerMinting{Model: uint16(parsedModel), Token: transferEvent.Token, To: transferEvent.To})
 
 		} else {
 			router.router.ServerConfig.LOGGER.Error("Invalid searched trainer")
 		}
+
 		return
 	}
 

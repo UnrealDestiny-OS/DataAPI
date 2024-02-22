@@ -1,7 +1,6 @@
 package users
 
 import (
-	"github.com/ethereum/go-ethereum/common"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -39,11 +38,6 @@ type APICreateUserProfile struct {
 	CreationChain int64  `json:"chain"`
 }
 
-type SignCreateUserRequest struct {
-	Wallet   common.Address
-	Chain    int
-	Username string
-}
-
 var COLLECTION_HOLDERS = "static-users-holders"
 var COLLECTION_POSSIBLE_USERS = "static-users-possible"
+var COLLECTION_USER_PROFILES = "user-profiles"
