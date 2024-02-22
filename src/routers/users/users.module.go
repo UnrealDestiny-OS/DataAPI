@@ -161,6 +161,24 @@ func (router *UsersRouter) createProfileUsingSign(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, result)
 }
 
+// NOTE - getUserProfile
+func (router *UsersRouter) getUserProfile(c *gin.Context) {
+	var user UserProfile
+
+	profileSCollection := router.router.MainDatabase.Collection(COLLECTION_USER_PROFILES)
+
+	result := profileSCollection.FindOne(context.TODO(), bson.M{"wallet": c.Param("address")})
+
+	if result.Err() == mongo.ErrNoDocuments {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": USERS_ERROR_THE_USER_NOT_EXISTS})
+		return
+	}
+
+	result.Decode(&user)
+
+	c.IndentedJSON(http.StatusOK, user)
+}
+
 // SECTION - Router Main methods
 // All the methods related to the initialization or configuration
 // Normally this methods will be called from another core modules
@@ -170,6 +188,7 @@ func (router *UsersRouter) CreateRoutes() error {
 	router.router.ParsedPost("/possible", router.addPossibleUser)
 	router.router.ParsedGet("/possible", router.getPossibleUsers)
 	router.router.ParsedPost("/profile", router.createProfileUsingSign)
+	router.router.ParsedGet("/profile/:address", router.getUserProfile)
 	return nil
 }
 
