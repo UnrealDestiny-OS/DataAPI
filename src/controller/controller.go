@@ -2,10 +2,10 @@ package controller
 
 import (
 	"errors"
-	"fmt"
 	"unrealDestiny/dataAPI/src/routers/trainers"
 	"unrealDestiny/dataAPI/src/routers/users"
 	"unrealDestiny/dataAPI/src/utils/config"
+	"unrealDestiny/dataAPI/src/utils/contracts"
 
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gin-gonic/gin"
@@ -41,12 +41,13 @@ func (config *RoutersConfig) InitAllRoutes(serverConfig *config.ServerConfig) er
 // NOTE - CreateReaderController(*ServerConfig, *ginEngine)
 // Creates all the routers on the application, then manage it to saolve all the gin routes
 func CreateReaderController(serverConfig *config.ServerConfig, router *gin.Engine, databaseClient *mongo.Client, database *mongo.Database, client *ethclient.Client) error {
+	contractDeployments := contracts.LoadDeploymentsData()
+
 	routers := RoutersConfig{
 		Users:    users.CreateUsersRouter(serverConfig, router, database),
-		Trainers: trainers.CreateRouter(serverConfig, router, database, client),
+		Trainers: trainers.CreateRouter(serverConfig, router, database, client, contractDeployments),
 	}
 
-	fmt.Print("Hola")
 	err := routers.InitAllRoutes(serverConfig)
 
 	if err != nil {

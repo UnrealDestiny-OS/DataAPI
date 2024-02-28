@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 	"unrealDestiny/dataAPI/src/controller"
@@ -50,6 +51,7 @@ func main() {
 	client, err := ethclient.Dial(config.MTRG_WS_CLIENT)
 
 	if err != nil {
+		fmt.Println(err)
 		config.LOGGER.Fatal("ETH Client errorr")
 	}
 

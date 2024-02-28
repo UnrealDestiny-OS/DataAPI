@@ -10,6 +10,7 @@ import (
 	"sync"
 	trainers_contract "unrealDestiny/dataAPI/src/routers/trainers/contract"
 	"unrealDestiny/dataAPI/src/utils/config"
+	"unrealDestiny/dataAPI/src/utils/contracts"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -22,7 +23,8 @@ import (
 )
 
 type TrainersRouter struct {
-	router config.Router
+	router      config.Router
+	deployments *contracts.Deployments
 }
 
 // SECTION - REST API
@@ -187,7 +189,7 @@ func (router *TrainersRouter) moveTrainerFromOwner(transferEvent TrainerTransfer
 		if err == mongo.ErrNoDocuments {
 			router.router.ServerConfig.LOGGER.Info("Not offchain trainer detected, generating new one offchain")
 
-			instance, err := trainers_contract.NewTrainers(common.HexToAddress(CONTRACT_TRAINERS_ERC721), router.router.ETHCLient)
+			instance, err := trainers_contract.NewTrainers(common.HexToAddress(router.deployments.TrainersERC721.Address), router.router.ETHCLient)
 
 			if err != nil {
 				router.router.ServerConfig.LOGGER.Error("Error creating the trainers contract instance")
@@ -237,14 +239,14 @@ func (router *TrainersRouter) moveTrainerFromOwner(transferEvent TrainerTransfer
 func (router *TrainersRouter) initChainListeners() {
 	router.router.ServerConfig.LOGGER.Info("Starting Trainers OnChain Listeners")
 
-	logs, sub, err := SubcribeToTransfers(router.router.ETHCLient)
+	logs, sub, err := SubcribeToTransfers(router.router.ETHCLient, router.deployments.TrainersERC721.Address)
 
 	if err != nil {
 		router.router.ServerConfig.LOGGER.Fatal("Trainers Query subscription error")
 		return
 	}
 
-	contractAbi, err := abi.JSON(strings.NewReader(string(trainers_contract.TrainersABI)))
+	contractAbi, err := abi.JSON(strings.NewReader(string(*router.deployments.TrainersERC721.JsonAbi())))
 
 	if err != nil {
 		router.router.ServerConfig.LOGGER.Fatal("Error parsing the contract ABI")
@@ -282,24 +284,28 @@ func (router *TrainersRouter) initChainListeners() {
 
 					if err != nil {
 						router.router.ServerConfig.LOGGER.Error("Error unpacking mint trainer data")
+						return
 					}
 
 					mintEvent.Model, ok = mintTrainerInterface[0].(uint16)
 
 					if !ok {
 						router.router.ServerConfig.LOGGER.Error("Error parsing the trainer minting event data (Model)")
+						return
 					}
 
 					mintEvent.Token, ok = mintTrainerInterface[1].(*big.Int)
 
 					if !ok {
 						router.router.ServerConfig.LOGGER.Error("Error parsing the trainer minting event data (Token)")
+						return
 					}
 
 					mintEvent.To, ok = mintTrainerInterface[2].(common.Address)
 
 					if !ok {
 						router.router.ServerConfig.LOGGER.Error("Error parsing the trainer minting event data (To)")
+						return
 					}
 
 					router.addNewUserTrainer(mintEvent)
@@ -331,15 +337,16 @@ func (router *TrainersRouter) Init(serverConfig *config.ServerConfig, mainRouter
 	router.router.ServerConfig.LOGGER.Info("Starting Trainers router on " + router.router.Path)
 }
 
-func (router *TrainersRouter) InitETH(client *ethclient.Client) {
+func (router *TrainersRouter) InitETH(client *ethclient.Client, deployments *contracts.Deployments) {
 	router.router.ETHCLient = client
+	router.deployments = deployments
 	router.router.ServerConfig.LOGGER.Info("Starting Trainers ETH CLient on " + router.router.Path)
 	router.initChainListeners()
 }
 
-func CreateRouter(serverConfig *config.ServerConfig, router *gin.Engine, database *mongo.Database, client *ethclient.Client) *TrainersRouter {
+func CreateRouter(serverConfig *config.ServerConfig, router *gin.Engine, database *mongo.Database, client *ethclient.Client, deployments *contracts.Deployments) *TrainersRouter {
 	trainers := new(TrainersRouter)
 	trainers.Init(serverConfig, router, database)
-	trainers.InitETH(client)
+	trainers.InitETH(client, deployments)
 	return trainers
 }
