@@ -179,6 +179,48 @@ func (router *UsersRouter) getUserProfile(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, user)
 }
 
+func (router *UsersRouter) validateProfile(c *gin.Context) {
+	var validateProfileRequest APIValidateUserProfile
+	var user UserProfile
+
+	err := c.BindJSON(&validateProfileRequest)
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": USERS_ERROR_PARSING})
+		return
+	}
+
+	profilesCollection := router.router.MainDatabase.Collection(COLLECTION_USER_PROFILES)
+
+	result := profilesCollection.FindOne(context.TODO(), bson.M{"wallet": c.Param("address")})
+
+	if result.Err() == mongo.ErrNoDocuments {
+		user = UserProfile{
+			Wallet:     validateProfileRequest.Wallet,
+			Name:       "Anonymous ",
+			UDT:        0,
+			FUDT:       0,
+			Level:      1,
+			Experience: 0,
+			Chain:      validateProfileRequest.CreationChain,
+		}
+
+		_, err := profilesCollection.InsertOne(context.TODO(), user)
+
+		if err != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": USERS_ERROR_INSERT_DATABASE_ERROR})
+			return
+		}
+
+		router.router.ServerConfig.LOGGER.Info("New user profile on validation; " + validateProfileRequest.Wallet)
+		c.IndentedJSON(http.StatusOK, user)
+		return
+	}
+
+	result.Decode(&user)
+	c.IndentedJSON(http.StatusOK, user)
+}
+
 // SECTION - Router Main methods
 // All the methods related to the initialization or configuration
 // Normally this methods will be called from another core modules
@@ -188,6 +230,7 @@ func (router *UsersRouter) CreateRoutes() error {
 	router.router.ParsedPost("/possible", router.addPossibleUser)
 	router.router.ParsedGet("/possible", router.getPossibleUsers)
 	router.router.ParsedPost("/profile", router.createProfileUsingSign)
+	router.router.ParsedPost("/profile-validate", router.validateProfile)
 	router.router.ParsedGet("/profile/:address", router.getUserProfile)
 	return nil
 }

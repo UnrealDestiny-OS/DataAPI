@@ -38,6 +38,11 @@ type APICreateUserProfile struct {
 	CreationChain int64  `json:"chain"`
 }
 
+type APIValidateUserProfile struct {
+	Wallet        string `json:"wallet"`
+	CreationChain int64  `json:"chain"`
+}
+
 var COLLECTION_HOLDERS = "static-users-holders"
 var COLLECTION_POSSIBLE_USERS = "static-users-possible"
 var COLLECTION_USER_PROFILES = "user-profiles"
