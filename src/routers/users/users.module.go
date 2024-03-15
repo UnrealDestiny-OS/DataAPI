@@ -192,7 +192,7 @@ func (router *UsersRouter) validateProfile(c *gin.Context) {
 
 	profilesCollection := router.router.MainDatabase.Collection(COLLECTION_USER_PROFILES)
 
-	result := profilesCollection.FindOne(context.TODO(), bson.M{"wallet": c.Param("address")})
+	result := profilesCollection.FindOne(context.TODO(), bson.M{"wallet": validateProfileRequest.Wallet})
 
 	if result.Err() == mongo.ErrNoDocuments {
 		user = UserProfile{
