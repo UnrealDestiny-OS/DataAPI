@@ -36,6 +36,7 @@ type UserTrainer struct {
 	Network    int16              `bson:"network"`
 	Wallet     string             `bson:"wallet"`
 	Index      int32              `bson:"index"`
+	Contract   string             `bson:"contract"`
 }
 
 var COLLECTION_STATIC_TRAINERS = "static-trainers"

@@ -10,14 +10,16 @@ import (
 )
 
 type ServerConfig struct {
-	ENV            string
-	PORT           string
-	MONGO_CLIENT   string
-	MONGO_DATABASE string
-	MTRG_CLIENT    string
-	MTRG_WS_CLIENT string
-	LOGGER         *zap.Logger
-	CONTEXT        context.Context
+	ENV                      string
+	PORT                     string
+	MONGO_CLIENT             string
+	MONGO_DATABASE           string
+	MTRG_CLIENT              string
+	MTRG_WS_CLIENT           string
+	LOGGER                   *zap.Logger
+	CONTEXT                  context.Context
+	USE_PRODUCTION_ADDRESSES bool
+	ACTIVE_CHAIN_ID          int
 }
 
 type Router struct {

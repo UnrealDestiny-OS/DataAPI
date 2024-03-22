@@ -161,8 +161,9 @@ func (router *TrainersRouter) addNewUserTrainer(mintingEvent TrainerMinting) {
 	userTrainer.Attack = staticTrainer.Attack
 	userTrainer.Builder = staticTrainer.Builder
 	userTrainer.Name = staticTrainer.Name
-	userTrainer.Network = staticTrainer.Network
+	userTrainer.Network = int16(router.router.ServerConfig.ACTIVE_CHAIN_ID)
 	userTrainer.Wallet = mintingEvent.To.String()
+	userTrainer.Contract = router.deployments.TrainersERC721.Address
 	userTrainer.Index = int32(mintingEvent.Token.Int64())
 
 	userTrainersColection := router.router.MainDatabase.Collection(COLLECTION_USER_TRAINERS)
@@ -237,7 +238,7 @@ func (router *TrainersRouter) moveTrainerFromOwner(transferEvent TrainerTransfer
 }
 
 func (router *TrainersRouter) initChainListeners() {
-	router.router.ServerConfig.LOGGER.Info("Starting Trainers OnChain Listeners")
+	router.router.ServerConfig.LOGGER.Info("Starting Trainers OnChain Listeners using " + router.deployments.TrainersERC721.Address)
 
 	logs, sub, err := SubcribeToTransfers(router.router.ETHCLient, router.deployments.TrainersERC721.Address)
 

@@ -41,7 +41,7 @@ func (config *RoutersConfig) InitAllRoutes(serverConfig *config.ServerConfig) er
 // NOTE - CreateReaderController(*ServerConfig, *ginEngine)
 // Creates all the routers on the application, then manage it to saolve all the gin routes
 func CreateReaderController(serverConfig *config.ServerConfig, router *gin.Engine, databaseClient *mongo.Client, database *mongo.Database, client *ethclient.Client) error {
-	contractDeployments := contracts.LoadDeploymentsData()
+	contractDeployments := contracts.LoadDeploymentsData(serverConfig.USE_PRODUCTION_ADDRESSES)
 
 	routers := RoutersConfig{
 		Users:    users.CreateUsersRouter(serverConfig, router, database),

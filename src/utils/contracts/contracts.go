@@ -36,6 +36,15 @@ type Deployments struct {
 	TrainersIDLE     Deployment `json:"TrainersIDLE"`
 }
 
+type ProductionDeploymentAddresses struct {
+	UDToken          string
+	TrainersERC721   string
+	TrainersDeployer string
+	TrainersIDLE     string
+}
+
+var ProductionAddresses = ProductionDeploymentAddresses{UDToken: "0x70f87602111d878DC63a67E8750753d7a889Dfbd", TrainersERC721: "0x46E60d93bf8dfE6e2bc7f4aC789455A21352D44F", TrainersDeployer: "0xCa310C0FcfEb8166e3A39aee298d76bD8f9A8bF8", TrainersIDLE: "0xcF2f9fEFa42d5ec71cD9Cf7A465bFe540Df3f1d8"}
+
 func (deployment *Deployment) JsonAbi() *string {
 	b, err := json.Marshal(deployment.Abi)
 
@@ -48,7 +57,7 @@ func (deployment *Deployment) JsonAbi() *string {
 	return &parsed
 }
 
-func LoadDeploymentsData() *Deployments {
+func LoadDeploymentsData(useProductionAddresses bool) *Deployments {
 	jsonData, err := os.Open("./src/data/deployment.json")
 
 	if err != nil {
@@ -62,6 +71,13 @@ func LoadDeploymentsData() *Deployments {
 	var deployments Deployments
 
 	json.Unmarshal(byteValue, &deployments)
+
+	if useProductionAddresses {
+		deployments.UDToken.Address = ProductionAddresses.UDToken
+		deployments.TrainersERC721.Address = ProductionAddresses.TrainersERC721
+		deployments.TrainersDeployer.Address = ProductionAddresses.TrainersDeployer
+		deployments.TrainersIDLE.Address = ProductionAddresses.TrainersIDLE
+	}
 
 	return &deployments
 }
