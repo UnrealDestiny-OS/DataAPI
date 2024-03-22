@@ -13,7 +13,16 @@ type IdleInjectionLog struct {
 	Type    string             `bson:"type"`
 }
 
+type TransactionExecutionLog struct {
+	ID           primitive.ObjectID `bson:"_id,omitempty"`
+	GenerationID string             `bson:"generationID"`
+	Hash         string             `bson:"hash"`
+	Error        string             `bson:"error"`
+	Network      int                `bson:"network"`
+}
+
 var COLLECTION_IDLE_LOGS_INJECTIONS = "idle-logs-injection"
+var COLLECTION_IDLE_EXECUTION_LOG = "idle-logs-execution"
 
 //SECTION - Api requests typing
 

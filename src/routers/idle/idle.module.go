@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 	"unrealDestiny/dataAPI/src/routers/users"
 	"unrealDestiny/dataAPI/src/utils/config"
 	"unrealDestiny/dataAPI/src/utils/contracts"
@@ -42,10 +43,11 @@ type IdleRouter struct {
 }
 
 type IdleTransactionQueueElement struct {
-	Type     string
-	Contract common.Address
-	Data     []byte
-	GasLimit uint64
+	Type         string
+	Contract     common.Address
+	Data         []byte
+	GasLimit     uint64
+	GenerationID string
 }
 
 // SECTION - Database controllers
@@ -101,21 +103,37 @@ func (router *IdleRouter) getRandomQueue() *goque.Queue {
 	return router.transactionsQueues[rand.Intn(max-min)+min]
 }
 
-func (router *IdleRouter) processTransaction(contract common.Address, data []byte, gasLimit uint64, executor *IdleExecutorStatus) {
-	router.router.ServerConfig.LOGGER.Info("Start a transaction execution using " + executor.address.String())
+func (router *IdleRouter) updateTransactionLog(generationID string, hash string, errorString string) {
+	transactionsLoggerCollection := router.router.MainDatabase.Collection(COLLECTION_IDLE_EXECUTION_LOG)
 
+	result, err := transactionsLoggerCollection.UpdateOne(context.Background(), bson.M{"generationID": generationID}, bson.M{"$set": bson.M{"hash": hash, "error": errorString}})
+
+	if err != nil {
+		router.router.ServerConfig.LOGGER.Error("Error updating the transaction log")
+		return
+	}
+
+	if result.ModifiedCount > 0 {
+		router.router.ServerConfig.LOGGER.Info("Updated transaction log")
+	}
+}
+
+func (router *IdleRouter) processTransaction(contract common.Address, data []byte, gasLimit uint64, generationID string, executor *IdleExecutorStatus) {
 	if executor == nil {
 		router.finishTransaction(executor.address)
+		router.updateTransactionLog(generationID, "0x", IDLE_NOT_AVAILABLE_EXECUTOR)
 		router.router.ServerConfig.LOGGER.Error(IDLE_NOT_AVAILABLE_EXECUTOR)
 		return
 	} else {
 		executor.available = false
+		router.router.ServerConfig.LOGGER.Info("Starting the transaction execution (" + generationID + ") using " + executor.address.String())
 	}
 
 	nonce, err := router.router.ETHCLient.PendingNonceAt(context.Background(), executor.address)
 
 	if err != nil {
 		router.finishTransaction(executor.address)
+		router.updateTransactionLog(generationID, "0x", IDLE_ERROR_NONCE)
 		router.router.ServerConfig.LOGGER.Error(IDLE_ERROR_NONCE)
 		return
 	}
@@ -124,6 +142,7 @@ func (router *IdleRouter) processTransaction(contract common.Address, data []byt
 
 	if err != nil {
 		router.finishTransaction(executor.address)
+		router.updateTransactionLog(generationID, "0x", IDLE_ERROR_GAS_PRICE)
 		router.router.ServerConfig.LOGGER.Error(IDLE_ERROR_GAS_PRICE)
 		return
 	}
@@ -134,6 +153,7 @@ func (router *IdleRouter) processTransaction(contract common.Address, data []byt
 
 	if err != nil {
 		router.finishTransaction(executor.address)
+		router.updateTransactionLog(generationID, "0x", IDLE_ERROR_CHAIN_ID)
 		router.router.ServerConfig.LOGGER.Error(IDLE_ERROR_CHAIN_ID)
 		return
 	}
@@ -142,6 +162,7 @@ func (router *IdleRouter) processTransaction(contract common.Address, data []byt
 
 	if err != nil {
 		router.finishTransaction(executor.address)
+		router.updateTransactionLog(generationID, tx.Hash().String(), IDLE_ERROR_SIGNED_TX)
 		router.router.ServerConfig.LOGGER.Error(IDLE_ERROR_SIGNED_TX)
 		return
 	}
@@ -150,6 +171,7 @@ func (router *IdleRouter) processTransaction(contract common.Address, data []byt
 
 	if err != nil {
 		router.finishTransaction(executor.address)
+		router.updateTransactionLog(generationID, tx.Hash().String(), IDLE_SENDING_EXECUTOR_TX)
 		router.router.ServerConfig.LOGGER.Error(IDLE_SENDING_EXECUTOR_TX)
 		return
 	}
@@ -158,16 +180,19 @@ func (router *IdleRouter) processTransaction(contract common.Address, data []byt
 
 	if err != nil {
 		router.finishTransaction(executor.address)
+		router.updateTransactionLog(generationID, tx.Hash().String(), IDLE_WAITING_FOR_MINED)
 		router.router.ServerConfig.LOGGER.Error(IDLE_WAITING_FOR_MINED)
 		return
 	}
 
 	if receipt.Status == 0 {
 		router.finishTransaction(executor.address)
+		router.updateTransactionLog(generationID, tx.Hash().String(), IDLE_NOT_MINED_TRANSACTION)
 		router.router.ServerConfig.LOGGER.Error(IDLE_NOT_MINED_TRANSACTION)
 		return
 	}
 
+	router.updateTransactionLog(generationID, tx.Hash().String(), "0x")
 	router.finishTransaction(executor.address)
 }
 
@@ -191,15 +216,29 @@ func (router *IdleRouter) executeTrainerJoinRequest(c *gin.Context) {
 
 	contractAddress := common.HexToAddress(router.deployments.TrainersIDLE.Address)
 	trainerJoinTxData := GetTrainerJoinTxData(trainerJoin.Wallet, trainerJoin.Trainer)
+	txGenerationID := "tx-" + strconv.Itoa(int(time.Now().UnixNano())) + "-" + strconv.Itoa(int(rand.Intn(10000000)))
 
-	_, err = router.getRandomQueue().EnqueueObject(IdleTransactionQueueElement{Type: "TRAINER_JOIN", Contract: contractAddress, Data: trainerJoinTxData, GasLimit: uint64(110000)})
+	var transactionLog TransactionExecutionLog
+
+	transactionLog.GenerationID = txGenerationID
+
+	transactionsLoggerCollection := router.router.MainDatabase.Collection(COLLECTION_IDLE_EXECUTION_LOG)
+
+	_, err = transactionsLoggerCollection.InsertOne(context.TODO(), transactionLog)
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": IDLE_DATABASE_INSERT_ERROR})
+		return
+	}
+
+	_, err = router.getRandomQueue().EnqueueObject(IdleTransactionQueueElement{Type: "TRAINER_JOIN", Contract: contractAddress, Data: trainerJoinTxData, GasLimit: uint64(110000), GenerationID: txGenerationID})
 
 	if err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": IDLE_ENQUEUE_ERROR})
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, gin.H{"error": false})
+	c.IndentedJSON(http.StatusOK, gin.H{"error": false, "generationID": txGenerationID})
 }
 
 func (router *IdleRouter) executeCollectTransactionPointsRequest(c *gin.Context) {
@@ -215,14 +254,29 @@ func (router *IdleRouter) executeCollectTransactionPointsRequest(c *gin.Context)
 	contractAddress := common.HexToAddress(router.deployments.TrainersIDLE.Address)
 	trainerJoinTxData := GetCollectTransactionPointsData(collectTransactionPoints.Wallet, collectTransactionPoints.Trainer)
 
-	_, err = router.getRandomQueue().EnqueueObject(IdleTransactionQueueElement{Type: "COLLECT_TRANSACTION_POINTS", Contract: contractAddress, Data: trainerJoinTxData, GasLimit: uint64(110000)})
+	txGenerationID := "tx-" + strconv.Itoa(int(time.Now().UnixNano())) + "-" + strconv.Itoa(int(rand.Intn(10000000)))
+
+	var transactionLog TransactionExecutionLog
+
+	transactionLog.GenerationID = txGenerationID
+
+	transactionsLoggerCollection := router.router.MainDatabase.Collection(COLLECTION_IDLE_EXECUTION_LOG)
+
+	_, err = transactionsLoggerCollection.InsertOne(context.TODO(), transactionLog)
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": IDLE_DATABASE_INSERT_ERROR})
+		return
+	}
+
+	_, err = router.getRandomQueue().EnqueueObject(IdleTransactionQueueElement{Type: "COLLECT_TRANSACTION_POINTS", Contract: contractAddress, Data: trainerJoinTxData, GenerationID: txGenerationID, GasLimit: uint64(110000)})
 
 	if err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": IDLE_ENQUEUE_ERROR})
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, gin.H{"error": false})
+	c.IndentedJSON(http.StatusOK, gin.H{"error": false, "generationID": txGenerationID})
 }
 
 // SECTION - Onchain Listeners
@@ -349,7 +403,7 @@ func (router *IdleRouter) ValidateQueue(index int) {
 				router.transactionWaitGroup.Add(1)
 				var transactionElement IdleTransactionQueueElement
 				item.ToObject(&transactionElement)
-				go router.processTransaction(transactionElement.Contract, transactionElement.Data, transactionElement.GasLimit, &router.executors[index])
+				go router.processTransaction(transactionElement.Contract, transactionElement.Data, transactionElement.GasLimit, transactionElement.GenerationID, &router.executors[index])
 				router.transactionWaitGroup.Wait()
 				router.router.ServerConfig.LOGGER.Info("Finish transaction execution")
 				router.transactionsQueues[index].Dequeue()
