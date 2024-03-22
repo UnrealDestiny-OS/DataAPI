@@ -43,7 +43,7 @@ type ProductionDeploymentAddresses struct {
 	TrainersIDLE     string
 }
 
-var ProductionAddresses = ProductionDeploymentAddresses{UDToken: "0x70f87602111d878DC63a67E8750753d7a889Dfbd", TrainersERC721: "0x46E60d93bf8dfE6e2bc7f4aC789455A21352D44F", TrainersDeployer: "0xCa310C0FcfEb8166e3A39aee298d76bD8f9A8bF8", TrainersIDLE: "0x6b0eA35EAb6fca810Bba0B3bcda6BA81833FdD78"}
+var ProductionAddresses = ProductionDeploymentAddresses{UDToken: "0x70f87602111d878DC63a67E8750753d7a889Dfbd", TrainersERC721: "0x46E60d93bf8dfE6e2bc7f4aC789455A21352D44F", TrainersDeployer: "0xCa310C0FcfEb8166e3A39aee298d76bD8f9A8bF8", TrainersIDLE: "0x25c2D86706e2D3f28cB9DE6643f0f21Fb51D1E23"}
 
 func (deployment *Deployment) JsonAbi() *string {
 	b, err := json.Marshal(deployment.Abi)

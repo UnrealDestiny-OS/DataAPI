@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"crypto/ecdsa"
 
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gin-gonic/gin"
@@ -20,6 +21,7 @@ type ServerConfig struct {
 	CONTEXT                  context.Context
 	USE_PRODUCTION_ADDRESSES bool
 	ACTIVE_CHAIN_ID          int
+	EXECUTOR_PRIVATE_KEY     []*ecdsa.PrivateKey
 }
 
 type Router struct {

@@ -1,11 +1,13 @@
 package env
 
 import (
+	"crypto/ecdsa"
 	"log"
 	"os"
 	"strconv"
 	"unrealDestiny/dataAPI/src/utils/config"
 
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/joho/godotenv"
 )
 
@@ -78,6 +80,27 @@ func LoadEnv(serverConfig *config.ServerConfig) bool {
 		return false
 	}
 
+	var totalPrivateKeys int = 5
+	var privateKeysError bool = false
+	var privateKeysStrings []string
+	var privateKeys []*ecdsa.PrivateKey
+
+	for i := 0; i < totalPrivateKeys; i++ {
+		envString := os.Getenv("IDLE_GAME_EXECUTOR_PKEY_" + strconv.Itoa(i+1))
+
+		if envString == "" {
+			privateKeysError = true
+			break
+		}
+
+		privateKeysStrings = append(privateKeysStrings, envString)
+	}
+
+	if privateKeysError {
+		log.Println("Error getting the IDLE_GAME_EXECUTOR_PKEY variables.")
+		return false
+	}
+
 	serverConfig.ENV = ENV
 	serverConfig.PORT = PORT
 	serverConfig.MONGO_CLIENT = MONGO_CLIENT
@@ -99,8 +122,25 @@ func LoadEnv(serverConfig *config.ServerConfig) bool {
 		return false
 	}
 
+	for i := 0; i < totalPrivateKeys; i++ {
+		parsedKey, err := crypto.HexToECDSA(privateKeysStrings[i])
+
+		if err != nil {
+			privateKeysError = true
+			break
+		}
+
+		privateKeys = append(privateKeys, parsedKey)
+	}
+
+	if privateKeysError {
+		log.Println("Error parsing the executor private keys.")
+		return false
+	}
+
 	serverConfig.USE_PRODUCTION_ADDRESSES = useProductionAddressParsed
 	serverConfig.ACTIVE_CHAIN_ID = activeChainParsed
+	serverConfig.EXECUTOR_PRIVATE_KEY = privateKeys
 
 	log.Println("Use PRODUCTION_ADDRESSES: " + strconv.FormatBool(serverConfig.USE_PRODUCTION_ADDRESSES))
 	log.Println("Use ACTIVE_CHAIN_ID: " + ACTIVE_CHAIN_ID)

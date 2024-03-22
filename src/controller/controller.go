@@ -15,6 +15,7 @@ import (
 
 var USERS_ROUTER_ERROR string = "Error starting the users router"
 var TRAINERS_ROUTER_ERROR string = "Error starting the trainers router"
+var IDLE_ROUTERS_ERROR string = "Error starting the idle router"
 
 type RoutersConfig struct {
 	Users    *users.UsersRouter
@@ -35,6 +36,13 @@ func (config *RoutersConfig) InitAllRoutes(serverConfig *config.ServerConfig) er
 	if err != nil {
 		serverConfig.LOGGER.Fatal(TRAINERS_ROUTER_ERROR)
 		return errors.New(TRAINERS_ROUTER_ERROR)
+	}
+
+	err = config.Idle.CreateRoutes()
+
+	if err != nil {
+		serverConfig.LOGGER.Fatal(IDLE_ROUTERS_ERROR)
+		return errors.New(IDLE_ROUTERS_ERROR)
 	}
 
 	return nil
