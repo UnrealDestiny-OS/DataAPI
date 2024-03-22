@@ -22,6 +22,7 @@ type UserProfile struct {
 	ID         primitive.ObjectID `bson:"_id,omitempty"`
 	Wallet     string             `bson:"wallet"`
 	Name       string             `bson:"name"`
+	FEE        int64              `bson:"FEE"`
 	UDT        int64              `bson:"UDT"`
 	FUDT       int64              `bson:"FUDT"`
 	Level      int64              `bson:"level"`

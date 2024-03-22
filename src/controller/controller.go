@@ -2,6 +2,7 @@ package controller
 
 import (
 	"errors"
+	"unrealDestiny/dataAPI/src/routers/idle"
 	"unrealDestiny/dataAPI/src/routers/trainers"
 	"unrealDestiny/dataAPI/src/routers/users"
 	"unrealDestiny/dataAPI/src/utils/config"
@@ -18,6 +19,7 @@ var TRAINERS_ROUTER_ERROR string = "Error starting the trainers router"
 type RoutersConfig struct {
 	Users    *users.UsersRouter
 	Trainers *trainers.TrainersRouter
+	Idle     *idle.IdleRouter
 }
 
 func (config *RoutersConfig) InitAllRoutes(serverConfig *config.ServerConfig) error {
@@ -46,6 +48,7 @@ func CreateReaderController(serverConfig *config.ServerConfig, router *gin.Engin
 	routers := RoutersConfig{
 		Users:    users.CreateUsersRouter(serverConfig, router, database),
 		Trainers: trainers.CreateRouter(serverConfig, router, database, client, contractDeployments),
+		Idle:     idle.CreateRouter(serverConfig, router, database, client, contractDeployments),
 	}
 
 	err := routers.InitAllRoutes(serverConfig)

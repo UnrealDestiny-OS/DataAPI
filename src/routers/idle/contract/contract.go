@@ -1,0 +1,2633 @@
+// Code generated - DO NOT EDIT.
+// This file is a generated binding and any manual changes will be lost.
+
+package idle_contract
+
+import (
+	"errors"
+	"math/big"
+	"strings"
+
+	ethereum "github.com/ethereum/go-ethereum"
+	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/event"
+)
+
+// Reference imports to suppress errors if they are not otherwise used.
+var (
+	_ = errors.New
+	_ = big.NewInt
+	_ = strings.NewReader
+	_ = ethereum.NotFound
+	_ = bind.Bind
+	_ = common.Big1
+	_ = types.BloomLookup
+	_ = event.NewSubscription
+	_ = abi.ConvertType
+)
+
+// TrainersIDLEContractData is an auto generated low-level Go binding around an user-defined struct.
+type TrainersIDLEContractData struct {
+	TrainerIsActive            bool
+	StartBlock                 *big.Int
+	CurrentBlock               *big.Int
+	UserFeesBalance            *big.Int
+	TakedFees                  *big.Int
+	RewardsBalance             *big.Int
+	AvailableIdlePoints        *big.Int
+	AvailableTransactionPoints *big.Int
+	TrainerData                TrainersIDLEEntityData
+	IdleConfig                 TrainersIDLEIDLEConfiguration
+	TImprovements              []TrainersIDLEImprovement
+	TrainerImprovements        []bool
+	UserRewardsPercentage      []uint8
+	UserRewardsValues          []*big.Int
+}
+
+// TrainersIDLEEntityData is an auto generated low-level Go binding around an user-defined struct.
+type TrainersIDLEEntityData struct {
+	Mult   *big.Int
+	Points *big.Int
+}
+
+// TrainersIDLEIDLEConfiguration is an auto generated low-level Go binding around an user-defined struct.
+type TrainersIDLEIDLEConfiguration struct {
+	ProjectPercentage uint8
+	PPerBlock         *big.Int
+	PPerTrans         *big.Int
+	FeeMTR            *big.Int
+	StartBlock        *big.Int
+	MaxWinners        *big.Int
+}
+
+// TrainersIDLEImprovement is an auto generated low-level Go binding around an user-defined struct.
+type TrainersIDLEImprovement struct {
+	Value *big.Int
+	Mult  *big.Int
+}
+
+// TrainersIdleMetaData contains all meta data concerning the TrainersIdle contract.
+var TrainersIdleMetaData = &bind.MetaData{
+	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_trainersContract\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"BuyImprovement\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"CollectIDLEPoints\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"CollectTransactionPoints\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"InjectFeeBalance\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"Join\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"previousAdminRole\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"newAdminRole\",\"type\":\"bytes32\"}],\"name\":\"RoleAdminChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"RoleGranted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"RoleRevoked\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"ACTIVE_TRAINER_ERROR\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"CANT_GET_IT\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"DEFAULT_ADMIN_ROLE\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"EXECUTOR\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"MTR_FEE_ERROR\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"OWNER_ERROR\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_trainer\",\"type\":\"uint256\"}],\"name\":\"activationBlock\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_e\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_t\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_i\",\"type\":\"uint256\"}],\"name\":\"buyTrainerImprovement\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_t\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_i\",\"type\":\"uint256\"}],\"name\":\"canGetItTrainerImprovement\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_e\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_trainer\",\"type\":\"uint256\"}],\"name\":\"collectIDLEPoints\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_e\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_trainer\",\"type\":\"uint256\"}],\"name\":\"collectTransPoints\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"config_\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"projectPercentage\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"pPerBlock\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"pPerTrans\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"feeMTR\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"startBlock\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"maxWinners\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_to\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_trainer\",\"type\":\"uint256\"}],\"name\":\"getContractData\",\"outputs\":[{\"components\":[{\"internalType\":\"bool\",\"name\":\"trainerIsActive\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"startBlock\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"currentBlock\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"userFeesBalance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"takedFees\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"rewardsBalance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"availableIdlePoints\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"availableTransactionPoints\",\"type\":\"uint256\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"mult\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"points\",\"type\":\"uint256\"}],\"internalType\":\"structTrainersIDLE.EntityData\",\"name\":\"trainerData\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint8\",\"name\":\"projectPercentage\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"pPerBlock\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"pPerTrans\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"feeMTR\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"startBlock\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"maxWinners\",\"type\":\"uint256\"}],\"internalType\":\"structTrainersIDLE.IDLEConfiguration\",\"name\":\"idleConfig\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"mult\",\"type\":\"uint256\"}],\"internalType\":\"structTrainersIDLE.Improvement[]\",\"name\":\"tImprovements\",\"type\":\"tuple[]\"},{\"internalType\":\"bool[]\",\"name\":\"trainerImprovements\",\"type\":\"bool[]\"},{\"internalType\":\"uint8[]\",\"name\":\"userRewardsPercentage\",\"type\":\"uint8[]\"},{\"internalType\":\"uint256[]\",\"name\":\"userRewardsValues\",\"type\":\"uint256[]\"}],\"internalType\":\"structTrainersIDLE.ContractData\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"}],\"name\":\"getRoleAdmin\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getTakedFees\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_t\",\"type\":\"uint256\"}],\"name\":\"getTrainerData\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"mult\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"points\",\"type\":\"uint256\"}],\"internalType\":\"structTrainersIDLE.EntityData\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_to\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_t\",\"type\":\"uint256\"}],\"name\":\"getTrainerImprovements\",\"outputs\":[{\"internalType\":\"bool[]\",\"name\":\"\",\"type\":\"bool[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_to\",\"type\":\"uint256\"}],\"name\":\"getTrainersImprovements\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"mult\",\"type\":\"uint256\"}],\"internalType\":\"structTrainersIDLE.Improvement[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_e\",\"type\":\"address\"}],\"name\":\"getUserFeesBalance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_max\",\"type\":\"uint256\"}],\"name\":\"getUserRewardsValues\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_max\",\"type\":\"uint256\"}],\"name\":\"getUsersRewardsPercentages\",\"outputs\":[{\"internalType\":\"uint8[]\",\"name\":\"\",\"type\":\"uint8[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"grantRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_t\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_i\",\"type\":\"uint256\"}],\"name\":\"hasEnoughtForTrainerI\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"hasRole\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_trainer\",\"type\":\"uint256\"}],\"name\":\"idleBlocks\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"injectBalance\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_trainer\",\"type\":\"uint256\"}],\"name\":\"isActive\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_e\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_trainer\",\"type\":\"uint256\"}],\"name\":\"joinWithTrainer\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"renounceRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"revokeRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"sendFeesToExecutor\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_e\",\"type\":\"address\"}],\"name\":\"setExecutor\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_fee\",\"type\":\"uint256\"}],\"name\":\"setMTRFee\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_i\",\"type\":\"uint256\"}],\"name\":\"setMaxWinners\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_v\",\"type\":\"uint256\"}],\"name\":\"setPPerBlock\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_v\",\"type\":\"uint256\"}],\"name\":\"setPPerTrans\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint8\",\"name\":\"_p\",\"type\":\"uint8\"}],\"name\":\"setPPercentage\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_i\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"_p\",\"type\":\"uint8\"}],\"name\":\"setRewardsP\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_i\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_value\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_mult\",\"type\":\"uint256\"}],\"name\":\"setTrainerImprovementValue\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_t\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_i\",\"type\":\"uint256\"}],\"name\":\"trainerHadImprovement\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"trainers_\",\"outputs\":[{\"internalType\":\"contractIERC721\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_t\",\"type\":\"uint256\"}],\"name\":\"transactionPoints\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_t\",\"type\":\"uint256\"}],\"name\":\"unlockedIdlePoints\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
+	Bin: "0x608060405234801562000010575f80fd5b5060405162003af538038062003af5833981810160405281019062000036919062000264565b620000595f801b6200004d620000aa60201b60201c565b620000b160201b60201c565b8060015f6101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550436002600401819055505062000294565b5f33905090565b620000c382826200019c60201b60201c565b620001985760015f808481526020019081526020015f205f015f8373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020015f205f6101000a81548160ff0219169083151502179055506200013d620000aa60201b60201c565b73ffffffffffffffffffffffffffffffffffffffff168173ffffffffffffffffffffffffffffffffffffffff16837f2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d60405160405180910390a45b5050565b5f805f8481526020019081526020015f205f015f8373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020015f205f9054906101000a900460ff16905092915050565b5f80fd5b5f73ffffffffffffffffffffffffffffffffffffffff82169050919050565b5f6200022e8262000203565b9050919050565b620002408162000222565b81146200024b575f80fd5b50565b5f815190506200025e8162000235565b92915050565b5f602082840312156200027c576200027b620001ff565b5b5f6200028b848285016200024e565b91505092915050565b61385380620002a25f395ff3fe608060405260043610610266575f3560e01c806395652eba11610143578063ba9a2b13116100b5578063d547741f11610079578063d547741f146109a5578063d967895e146109cd578063e2c579a4146109f5578063e6bcf40614610a1f578063ea13082014610a47578063fc39d25d14610a6f57610266565b8063ba9a2b13146108a1578063bc3a274b146108dd578063c802748c14610905578063d014a34314610941578063d17b18c41461097d57610266565b8063a195777c11610107578063a195777c14610781578063a217fddf146107ab578063ae805057146107d5578063b601860c146107ff578063b7c7dbf914610829578063b96f141b1461086557610266565b806395652eba146106af5780639bb0b7a3146106b95780639db137e7146106e15780639e857ad814610709578063a036db5c1461074557610266565b80633c4141fd116101dc578063769cdfa4116101a0578063769cdfa41461057a57806382afd23b146105b657806382d5a8f0146105f257806391d1485414610621578063937104211461065d578063944101351461067357610266565b80633c4141fd146104885780633d95d225146104c45780634bce1b87146105005780635f6846fa14610528578063630dc7cb1461055057610266565b8063248a9ca31161022e578063248a9ca31461036e5780632a080a75146103aa5780632c7d3c6c146103e65780632f2ff15d1461041057806336568abe1461043857806338cf6da71461046057610266565b806301ffc9a71461026a5780630f1a4273146102a65780631c3c0ea8146102ce5780631c8b2f02146102f65780631e9b26e314610332575b5f80fd5b348015610275575f80fd5b50610290600480360381019061028b9190612699565b610a99565b60405161029d91906126de565b60405180910390f35b3480156102b1575f80fd5b506102cc60048036038101906102c7919061272a565b610b12565b005b3480156102d9575f80fd5b506102f460048036038101906102ef91906127af565b610b2c565b005b348015610301575f80fd5b5061031c600480360381019061031791906127da565b610bc7565b60405161032991906126de565b60405180910390f35b34801561033d575f80fd5b50610358600480360381019061035391906127da565b610bfb565b60405161036591906126de565b60405180910390f35b348015610379575f80fd5b50610394600480360381019061038f919061284b565b610c31565b6040516103a19190612885565b60405180910390f35b3480156103b5575f80fd5b506103d060048036038101906103cb919061272a565b610c4d565b6040516103dd91906128da565b60405180910390f35b3480156103f1575f80fd5b506103fa610c8b565b604051610407919061297d565b60405180910390f35b34801561041b575f80fd5b506104366004803603810190610431919061299d565b610cc4565b005b348015610443575f80fd5b5061045e6004803603810190610459919061299d565b610ce5565b005b34801561046b575f80fd5b50610486600480360381019061048191906129db565b610d68565b005b348015610493575f80fd5b506104ae60048036038101906104a9919061272a565b610f0e565b6040516104bb9190612a3a565b60405180910390f35b3480156104cf575f80fd5b506104ea60048036038101906104e5919061272a565b610f28565b6040516104f79190612a3a565b60405180910390f35b34801561050b575f80fd5b5061052660048036038101906105219190612a53565b610f67565b005b348015610533575f80fd5b5061054e60048036038101906105499190612a53565b6111ea565b005b34801561055b575f80fd5b5061056461128d565b6040516105719190612885565b60405180910390f35b348015610585575f80fd5b506105a0600480360381019061059b919061272a565b6112b1565b6040516105ad9190612a3a565b60405180910390f35b3480156105c1575f80fd5b506105dc60048036038101906105d7919061272a565b6112dc565b6040516105e991906126de565b60405180910390f35b3480156105fd575f80fd5b506106066112f9565b60405161061896959493929190612aac565b60405180910390f35b34801561062c575f80fd5b506106476004803603810190610642919061299d565b61132e565b60405161065491906126de565b60405180910390f35b348015610668575f80fd5b50610671611391565b005b34801561067e575f80fd5b506106996004803603810190610694919061272a565b6114ac565b6040516106a69190612bc2565b60405180910390f35b6106b7611560565b005b3480156106c4575f80fd5b506106df60048036038101906106da9190612c0c565b6116af565b005b3480156106ec575f80fd5b5061070760048036038101906107029190612a53565b6116e9565b005b348015610714575f80fd5b5061072f600480360381019061072a91906127af565b611823565b60405161073c9190612a3a565b60405180910390f35b348015610750575f80fd5b5061076b600480360381019061076691906127da565b611869565b6040516107789190612d01565b60405180910390f35b34801561078c575f80fd5b5061079561192b565b6040516107a2919061297d565b60405180910390f35b3480156107b6575f80fd5b506107bf611964565b6040516107cc9190612885565b60405180910390f35b3480156107e0575f80fd5b506107e961196a565b6040516107f69190612a3a565b60405180910390f35b34801561080a575f80fd5b50610813611973565b604051610820919061297d565b60405180910390f35b348015610834575f80fd5b5061084f600480360381019061084a919061272a565b6119ac565b60405161085c9190612df6565b60405180910390f35b348015610870575f80fd5b5061088b6004803603810190610886919061272a565b611a73565b6040516108989190612ebe565b60405180910390f35b3480156108ac575f80fd5b506108c760048036038101906108c291906127da565b611b3e565b6040516108d491906126de565b60405180910390f35b3480156108e8575f80fd5b5061090360048036038101906108fe919061272a565b611b64565b005b348015610910575f80fd5b5061092b600480360381019061092691906127da565b611b7e565b6040516109389190613274565b60405180910390f35b34801561094c575f80fd5b506109676004803603810190610962919061272a565b611d7c565b6040516109749190612a3a565b60405180910390f35b348015610988575f80fd5b506109a3600480360381019061099e919061272a565b611da1565b005b3480156109b0575f80fd5b506109cb60048036038101906109c6919061299d565b611dbb565b005b3480156109d8575f80fd5b506109f360048036038101906109ee9190613294565b611ddc565b005b348015610a00575f80fd5b50610a09611e08565b604051610a16919061331a565b60405180910390f35b348015610a2a575f80fd5b50610a456004803603810190610a40919061272a565b611e2d565b005b348015610a52575f80fd5b50610a6d6004803603810190610a689190613333565b611e46565b005b348015610a7a575f80fd5b50610a83611e89565b604051610a90919061297d565b60405180910390f35b5f7f7965db0b000000000000000000000000000000000000000000000000000000007bffffffffffffffffffffffffffffffffffffffffffffffffffffffff1916827bffffffffffffffffffffffffffffffffffffffffffffffffffffffff19161480610b0b5750610b0a82611ec2565b5b9050919050565b5f801b610b1e81611f2b565b816002600301819055505050565b5f801b610b3881611f2b565b8160105f6101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550610bc37f9cf85f95575c3af1e116e3d37fd41e7f36a8a373623f51ffaaa87fdd032fa76760105f9054906101000a900473ffffffffffffffffffffffffffffffffffffffff16611f3f565b5050565b5f60095f8381526020019081526020015f205f0154600a5f8581526020019081526020015f20600101541015905092915050565b5f600b5f8481526020019081526020015f205f8381526020019081526020015f205f9054906101000a900460ff16905092915050565b5f805f8381526020019081526020015f20600101549050919050565b610c55612568565b600a5f8381526020019081526020015f206040518060400160405290815f82015481526020016001820154815250509050919050565b6040518060400160405280600d81526020017f4d54525f4645455f4552524f520000000000000000000000000000000000000081525081565b610ccd82610c31565b610cd681611f2b565b610ce08383611f3f565b505050565b610ced612019565b73ffffffffffffffffffffffffffffffffffffffff168173ffffffffffffffffffffffffffffffffffffffff1614610d5a576040517f08c379a0000000000000000000000000000000000000000000000000000000008152600401610d51906133f3565b60405180910390fd5b610d648282612020565b5050565b7f9cf85f95575c3af1e116e3d37fd41e7f36a8a373623f51ffaaa87fdd032fa767610d9281611f2b565b610d9b846120fa565b610da58383611b3e565b6040518060400160405280600b81526020017f43414e545f4745545f495400000000000000000000000000000000000000000081525090610e1c576040517f08c379a0000000000000000000000000000000000000000000000000000000008152600401610e13919061297d565b60405180910390fd5b506001600b5f8581526020019081526020015f205f8481526020019081526020015f205f6101000a81548160ff02191690831515021790555060095f8381526020019081526020015f2060010154600a5f8581526020019081526020015f205f015f828254610e8b919061343e565b9250508190555060095f8381526020019081526020015f205f0154600a5f8581526020019081526020015f206001015f828254610ec89190613471565b925050819055507f5999410022ec50d1ffde644471d13ab5b5482616c8bfc6696d13aa0577c5840c8242604051610f009291906134a4565b60405180910390a150505050565b5f60085f8381526020019081526020015f20549050919050565b5f600a5f8381526020019081526020015f205f0154610f4683611d7c565b600260010154610f5691906134cb565b610f6091906134cb565b9050919050565b7f9cf85f95575c3af1e116e3d37fd41e7f36a8a373623f51ffaaa87fdd032fa767610f9181611f2b565b610f9a836120fa565b610fa3826112dc565b156040518060400160405280601481526020017f4143544956455f545241494e45525f4552524f520000000000000000000000008152509061101b576040517f08c379a0000000000000000000000000000000000000000000000000000000008152600401611012919061297d565b60405180910390fd5b50611024612019565b73ffffffffffffffffffffffffffffffffffffffff1660015f9054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16636352211e846040518263ffffffff1660e01b81526004016110949190612a3a565b602060405180830381865afa1580156110af573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906110d39190613520565b73ffffffffffffffffffffffffffffffffffffffff16146040518060400160405280600b81526020017f4f574e45525f4552524f5200000000000000000000000000000000000000000081525090611161576040517f08c379a0000000000000000000000000000000000000000000000000000000008152600401611158919061297d565b60405180910390fd5b504360085f8481526020019081526020015f20819055505f600a5f8481526020019081526020015f205f0154036111ac576001600a5f8481526020019081526020015f205f01819055505b7f735ef78aed2bd4cfae4d08680b7cb333d4aa561d0287a81d4abbac0b4b64d58982426040516111dd9291906134a4565b60405180910390a1505050565b7f9cf85f95575c3af1e116e3d37fd41e7f36a8a373623f51ffaaa87fdd032fa76761121481611f2b565b61121d836120fa565b611226826112b1565b600a5f8481526020019081526020015f206001015f828254611248919061343e565b925050819055507fb367f7a60fbab705463ff086be4fc59c2be65ec753e1c52ac8af6f1198c522c082426040516112809291906134a4565b60405180910390a1505050565b7f9cf85f95575c3af1e116e3d37fd41e7f36a8a373623f51ffaaa87fdd032fa76781565b5f600a5f8381526020019081526020015f205f015460028001546112d591906134cb565b9050919050565b5f8060085f8481526020019081526020015f205414159050919050565b6002805f015f9054906101000a900460ff16908060010154908060020154908060030154908060040154908060050154905086565b5f805f8481526020019081526020015f205f015f8373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020015f205f9054906101000a900460ff16905092915050565b5f801b61139d81611f2b565b5f60105f9054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16600f546040516113e590613578565b5f6040518083038185875af1925050503d805f811461141f576040519150601f19603f3d011682016040523d82523d5f602084013e611424565b606091505b50509050806040518060400160405280600d81526020017f4d54525f4645455f4552524f5200000000000000000000000000000000000000815250906114a0576040517f08c379a0000000000000000000000000000000000000000000000000000000008152600401611497919061297d565b60405180910390fd5b505f600f819055505050565b60605f8267ffffffffffffffff8111156114c9576114c861358c565b5b6040519080825280602002602001820160405280156114f75781602001602082028036833780820191505090505b5090505f5b8381101561155657600c5f8281526020019081526020015f205f9054906101000a900460ff16828281518110611535576115346135b9565b5b602002602001019060ff16908160ff168152505080806001019150506114fc565b5080915050919050565b6002600301543410156040518060400160405280600d81526020017f4d54525f4645455f4552524f5200000000000000000000000000000000000000815250906115e0576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004016115d7919061297d565b60405180910390fd5b505f6115ea612019565b90505f600260030154346115fe9190613471565b9050600260030154600f5f828254611616919061343e565b9250508190555080600d5f8473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020015f205f828254611669919061343e565b925050819055507f9e9b7e29099f2d6721d8268a517ee7ada50ae5d99eab1c668a3ba067877023fb8282426040516116a3939291906135f5565b60405180910390a15050565b5f801b6116bb81611f2b565b81600c5f8581526020019081526020015f205f6101000a81548160ff021916908360ff160217905550505050565b7f9cf85f95575c3af1e116e3d37fd41e7f36a8a373623f51ffaaa87fdd032fa76761171381611f2b565b61171c836120fa565b611725826112dc565b6040518060400160405280601481526020017f4143544956455f545241494e45525f4552524f520000000000000000000000008152509061179c576040517f08c379a0000000000000000000000000000000000000000000000000000000008152600401611793919061297d565b60405180910390fd5b506117a682610f28565b600a5f8481526020019081526020015f206001015f8282546117c8919061343e565b925050819055504360085f8481526020019081526020015f20819055507fc9cd65a70e4e2a217623cf87df32706764a2f447cb55b016b28e0c643e681ae282426040516118169291906134a4565b60405180910390a1505050565b5f600d5f8373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020015f20549050919050565b60605f8367ffffffffffffffff8111156118865761188561358c565b5b6040519080825280602002602001820160405280156118b45781602001602082028036833780820191505090505b5090505f5b8481101561192057600b5f8581526020019081526020015f205f8281526020019081526020015f205f9054906101000a900460ff16828281518110611901576119006135b9565b5b60200260200101901515908115158152505080806001019150506118b9565b508091505092915050565b6040518060400160405280600b81526020017f4f574e45525f4552524f5200000000000000000000000000000000000000000081525081565b5f801b81565b5f600f54905090565b6040518060400160405280600b81526020017f43414e545f4745545f495400000000000000000000000000000000000000000081525081565b60605f8267ffffffffffffffff8111156119c9576119c861358c565b5b604051908082528060200260200182016040528015611a0257816020015b6119ef612580565b8152602001906001900390816119e75790505b5090505f5b83811015611a695760095f8281526020019081526020015f206040518060400160405290815f8201548152602001600182015481525050828281518110611a5157611a506135b9565b5b60200260200101819052508080600101915050611a07565b5080915050919050565b60605f4790505f8367ffffffffffffffff811115611a9457611a9361358c565b5b604051908082528060200260200182016040528015611ac25781602001602082028036833780820191505090505b5090505f5b84811015611b3357606483600c5f8481526020019081526020015f205f9054906101000a900460ff1660ff16611afd91906134cb565b611b079190613657565b828281518110611b1a57611b196135b9565b5b6020026020010181815250508080600101915050611ac7565b508092505050919050565b5f611b498383610bfb565b158015611b5c5750611b5b8383610bc7565b5b905092915050565b5f801b611b7081611f2b565b816002600101819055505050565b611b86612598565b604051806101c00160405280611b9b846112dc565b1515815260200160085f8581526020019081526020015f20548152602001438152602001600d5f60015f9054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16636352211e876040518263ffffffff1660e01b8152600401611c1c9190612a3a565b602060405180830381865afa158015611c37573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190611c5b9190613520565b73ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020015f20548152602001600f548152602001600e548152602001611cb384610f28565b8152602001611cc1846112b1565b8152602001611ccf84610c4d565b815260200160026040518060c00160405290815f82015f9054906101000a900460ff1660ff1660ff168152602001600182015481526020016002820154815260200160038201548152602001600482015481526020016005820154815250508152602001611d3c856119ac565b8152602001611d4b8585611869565b8152602001611d5e6002600501546114ac565b8152602001611d71600260050154611a73565b815250905092915050565b5f60085f8381526020019081526020015f205443611d9a9190613471565b9050919050565b5f801b611dad81611f2b565b816002600501819055505050565b611dc482610c31565b611dcd81611f2b565b611dd78383612020565b505050565b5f801b611de881611f2b565b8160025f015f6101000a81548160ff021916908360ff1602179055505050565b60015f9054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b5f801b611e3981611f2b565b8160028001819055505050565b5f801b611e5281611f2b565b8260095f8681526020019081526020015f205f01819055508160095f8681526020019081526020015f206001018190555050505050565b6040518060400160405280601481526020017f4143544956455f545241494e45525f4552524f5200000000000000000000000081525081565b5f7f01ffc9a7000000000000000000000000000000000000000000000000000000007bffffffffffffffffffffffffffffffffffffffffffffffffffffffff1916827bffffffffffffffffffffffffffffffffffffffffffffffffffffffff1916149050919050565b611f3c81611f37612019565b612282565b50565b611f49828261132e565b6120155760015f808481526020019081526020015f205f015f8373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020015f205f6101000a81548160ff021916908315150217905550611fba612019565b73ffffffffffffffffffffffffffffffffffffffff168173ffffffffffffffffffffffffffffffffffffffff16837f2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d60405160405180910390a45b5050565b5f33905090565b61202a828261132e565b156120f6575f805f8481526020019081526020015f205f015f8373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020015f205f6101000a81548160ff02191690831515021790555061209b612019565b73ffffffffffffffffffffffffffffffffffffffff168173ffffffffffffffffffffffffffffffffffffffff16837ff6391f5c32d9c69d2a47ea670b442974b53935d1edc7fd64eb21e047a839171b60405160405180910390a45b5050565b5f600260030154905080600d5f8473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020015f205410156040518060400160405280600d81526020017f4d54525f4645455f4552524f5200000000000000000000000000000000000000815250906121bb576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004016121b2919061297d565b60405180910390fd5b505f60648260025f015f9054906101000a900460ff1660ff166121de91906134cb565b6121e89190613657565b90505f81836121f79190613471565b905082600d5f8673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020015f205f8282546122459190613471565b9250508190555081600f5f82825461225d919061343e565b9250508190555080600e5f828254612275919061343e565b9250508190555050505050565b61228c828261132e565b6123025761229981612306565b6122a6835f1c6020612333565b6040516020016122b7929190613755565b6040516020818303038152906040526040517f08c379a00000000000000000000000000000000000000000000000000000000081526004016122f9919061297d565b60405180910390fd5b5050565b606061232c8273ffffffffffffffffffffffffffffffffffffffff16601460ff16612333565b9050919050565b60605f600283600261234591906134cb565b61234f919061343e565b67ffffffffffffffff8111156123685761236761358c565b5b6040519080825280601f01601f19166020018201604052801561239a5781602001600182028036833780820191505090505b5090507f3000000000000000000000000000000000000000000000000000000000000000815f815181106123d1576123d06135b9565b5b60200101907effffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff191690815f1a9053507f780000000000000000000000000000000000000000000000000000000000000081600181518110612434576124336135b9565b5b60200101907effffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff191690815f1a9053505f600184600261247291906134cb565b61247c919061343e565b90505b600181111561251b577f3031323334353637383961626364656600000000000000000000000000000000600f8616601081106124be576124bd6135b9565b5b1a60f81b8282815181106124d5576124d46135b9565b5b60200101907effffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff191690815f1a905350600485901c9450806125149061378e565b905061247f565b505f841461255e576040517f08c379a0000000000000000000000000000000000000000000000000000000008152600401612555906137ff565b60405180910390fd5b8091505092915050565b60405180604001604052805f81526020015f81525090565b60405180604001604052805f81526020015f81525090565b604051806101c001604052805f151581526020015f81526020015f81526020015f81526020015f81526020015f81526020015f81526020015f81526020016125de612568565b81526020016125eb61260d565b8152602001606081526020016060815260200160608152602001606081525090565b6040518060c001604052805f60ff1681526020015f81526020015f81526020015f81526020015f81526020015f81525090565b5f80fd5b5f7fffffffff0000000000000000000000000000000000000000000000000000000082169050919050565b61267881612644565b8114612682575f80fd5b50565b5f813590506126938161266f565b92915050565b5f602082840312156126ae576126ad612640565b5b5f6126bb84828501612685565b91505092915050565b5f8115159050919050565b6126d8816126c4565b82525050565b5f6020820190506126f15f8301846126cf565b92915050565b5f819050919050565b612709816126f7565b8114612713575f80fd5b50565b5f8135905061272481612700565b92915050565b5f6020828403121561273f5761273e612640565b5b5f61274c84828501612716565b91505092915050565b5f73ffffffffffffffffffffffffffffffffffffffff82169050919050565b5f61277e82612755565b9050919050565b61278e81612774565b8114612798575f80fd5b50565b5f813590506127a981612785565b92915050565b5f602082840312156127c4576127c3612640565b5b5f6127d18482850161279b565b91505092915050565b5f80604083850312156127f0576127ef612640565b5b5f6127fd85828601612716565b925050602061280e85828601612716565b9150509250929050565b5f819050919050565b61282a81612818565b8114612834575f80fd5b50565b5f8135905061284581612821565b92915050565b5f602082840312156128605761285f612640565b5b5f61286d84828501612837565b91505092915050565b61287f81612818565b82525050565b5f6020820190506128985f830184612876565b92915050565b6128a7816126f7565b82525050565b604082015f8201516128c15f85018261289e565b5060208201516128d4602085018261289e565b50505050565b5f6040820190506128ed5f8301846128ad565b92915050565b5f81519050919050565b5f82825260208201905092915050565b5f5b8381101561292a57808201518184015260208101905061290f565b5f8484015250505050565b5f601f19601f8301169050919050565b5f61294f826128f3565b61295981856128fd565b935061296981856020860161290d565b61297281612935565b840191505092915050565b5f6020820190508181035f8301526129958184612945565b905092915050565b5f80604083850312156129b3576129b2612640565b5b5f6129c085828601612837565b92505060206129d18582860161279b565b9150509250929050565b5f805f606084860312156129f2576129f1612640565b5b5f6129ff8682870161279b565b9350506020612a1086828701612716565b9250506040612a2186828701612716565b9150509250925092565b612a34816126f7565b82525050565b5f602082019050612a4d5f830184612a2b565b92915050565b5f8060408385031215612a6957612a68612640565b5b5f612a768582860161279b565b9250506020612a8785828601612716565b9150509250929050565b5f60ff82169050919050565b612aa681612a91565b82525050565b5f60c082019050612abf5f830189612a9d565b612acc6020830188612a2b565b612ad96040830187612a2b565b612ae66060830186612a2b565b612af36080830185612a2b565b612b0060a0830184612a2b565b979650505050505050565b5f81519050919050565b5f82825260208201905092915050565b5f819050602082019050919050565b612b3d81612a91565b82525050565b5f612b4e8383612b34565b60208301905092915050565b5f602082019050919050565b5f612b7082612b0b565b612b7a8185612b15565b9350612b8583612b25565b805f5b83811015612bb5578151612b9c8882612b43565b9750612ba783612b5a565b925050600181019050612b88565b5085935050505092915050565b5f6020820190508181035f830152612bda8184612b66565b905092915050565b612beb81612a91565b8114612bf5575f80fd5b50565b5f81359050612c0681612be2565b92915050565b5f8060408385031215612c2257612c21612640565b5b5f612c2f85828601612716565b9250506020612c4085828601612bf8565b9150509250929050565b5f81519050919050565b5f82825260208201905092915050565b5f819050602082019050919050565b612c7c816126c4565b82525050565b5f612c8d8383612c73565b60208301905092915050565b5f602082019050919050565b5f612caf82612c4a565b612cb98185612c54565b9350612cc483612c64565b805f5b83811015612cf4578151612cdb8882612c82565b9750612ce683612c99565b925050600181019050612cc7565b5085935050505092915050565b5f6020820190508181035f830152612d198184612ca5565b905092915050565b5f81519050919050565b5f82825260208201905092915050565b5f819050602082019050919050565b604082015f820151612d5e5f85018261289e565b506020820151612d71602085018261289e565b50505050565b5f612d828383612d4a565b60408301905092915050565b5f602082019050919050565b5f612da482612d21565b612dae8185612d2b565b9350612db983612d3b565b805f5b83811015612de9578151612dd08882612d77565b9750612ddb83612d8e565b925050600181019050612dbc565b5085935050505092915050565b5f6020820190508181035f830152612e0e8184612d9a565b905092915050565b5f81519050919050565b5f82825260208201905092915050565b5f819050602082019050919050565b5f612e4a838361289e565b60208301905092915050565b5f602082019050919050565b5f612e6c82612e16565b612e768185612e20565b9350612e8183612e30565b805f5b83811015612eb1578151612e988882612e3f565b9750612ea383612e56565b925050600181019050612e84565b5085935050505092915050565b5f6020820190508181035f830152612ed68184612e62565b905092915050565b604082015f820151612ef25f85018261289e565b506020820151612f05602085018261289e565b50505050565b60c082015f820151612f1f5f850182612b34565b506020820151612f32602085018261289e565b506040820151612f45604085018261289e565b506060820151612f58606085018261289e565b506080820151612f6b608085018261289e565b5060a0820151612f7e60a085018261289e565b50505050565b5f82825260208201905092915050565b5f612f9e82612d21565b612fa88185612f84565b9350612fb383612d3b565b805f5b83811015612fe3578151612fca8882612d77565b9750612fd583612d8e565b925050600181019050612fb6565b5085935050505092915050565b5f82825260208201905092915050565b5f61300a82612c4a565b6130148185612ff0565b935061301f83612c64565b805f5b8381101561304f5781516130368882612c82565b975061304183612c99565b925050600181019050613022565b5085935050505092915050565b5f82825260208201905092915050565b5f61307682612b0b565b613080818561305c565b935061308b83612b25565b805f5b838110156130bb5781516130a28882612b43565b97506130ad83612b5a565b92505060018101905061308e565b5085935050505092915050565b5f82825260208201905092915050565b5f6130e282612e16565b6130ec81856130c8565b93506130f783612e30565b805f5b8381101561312757815161310e8882612e3f565b975061311983612e56565b9250506001810190506130fa565b5085935050505092915050565b5f61028083015f83015161314a5f860182612c73565b50602083015161315d602086018261289e565b506040830151613170604086018261289e565b506060830151613183606086018261289e565b506080830151613196608086018261289e565b5060a08301516131a960a086018261289e565b5060c08301516131bc60c086018261289e565b5060e08301516131cf60e086018261289e565b506101008301516131e4610100860182612ede565b506101208301516131f9610140860182612f0b565b506101408301518482036102008601526132138282612f94565b91505061016083015184820361022086015261322f8282613000565b91505061018083015184820361024086015261324b828261306c565b9150506101a083015184820361026086015261326782826130d8565b9150508091505092915050565b5f6020820190508181035f83015261328c8184613134565b905092915050565b5f602082840312156132a9576132a8612640565b5b5f6132b684828501612bf8565b91505092915050565b5f819050919050565b5f6132e26132dd6132d884612755565b6132bf565b612755565b9050919050565b5f6132f3826132c8565b9050919050565b5f613304826132e9565b9050919050565b613314816132fa565b82525050565b5f60208201905061332d5f83018461330b565b92915050565b5f805f6060848603121561334a57613349612640565b5b5f61335786828701612716565b935050602061336886828701612716565b925050604061337986828701612716565b9150509250925092565b7f416363657373436f6e74726f6c3a2063616e206f6e6c792072656e6f756e63655f8201527f20726f6c657320666f722073656c660000000000000000000000000000000000602082015250565b5f6133dd602f836128fd565b91506133e882613383565b604082019050919050565b5f6020820190508181035f83015261340a816133d1565b9050919050565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52601160045260245ffd5b5f613448826126f7565b9150613453836126f7565b925082820190508082111561346b5761346a613411565b5b92915050565b5f61347b826126f7565b9150613486836126f7565b925082820390508181111561349e5761349d613411565b5b92915050565b5f6040820190506134b75f830185612a2b565b6134c46020830184612a2b565b9392505050565b5f6134d5826126f7565b91506134e0836126f7565b92508282026134ee816126f7565b9150828204841483151761350557613504613411565b5b5092915050565b5f8151905061351a81612785565b92915050565b5f6020828403121561353557613534612640565b5b5f6135428482850161350c565b91505092915050565b5f81905092915050565b50565b5f6135635f8361354b565b915061356e82613555565b5f82019050919050565b5f61358282613558565b9150819050919050565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52604160045260245ffd5b7f4e487b71000000000000000000000000000000000000000000000000000000005f52603260045260245ffd5b6135ef81612774565b82525050565b5f6060820190506136085f8301866135e6565b6136156020830185612a2b565b6136226040830184612a2b565b949350505050565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52601260045260245ffd5b5f613661826126f7565b915061366c836126f7565b92508261367c5761367b61362a565b5b828204905092915050565b5f81905092915050565b7f416363657373436f6e74726f6c3a206163636f756e74200000000000000000005f82015250565b5f6136c5601783613687565b91506136d082613691565b601782019050919050565b5f6136e5826128f3565b6136ef8185613687565b93506136ff81856020860161290d565b80840191505092915050565b7f206973206d697373696e6720726f6c65200000000000000000000000000000005f82015250565b5f61373f601183613687565b915061374a8261370b565b601182019050919050565b5f61375f826136b9565b915061376b82856136db565b915061377682613733565b915061378282846136db565b91508190509392505050565b5f613798826126f7565b91505f82036137aa576137a9613411565b5b600182039050919050565b7f537472696e67733a20686578206c656e67746820696e73756666696369656e745f82015250565b5f6137e96020836128fd565b91506137f4826137b5565b602082019050919050565b5f6020820190508181035f830152613816816137dd565b905091905056fea264697066735822122060bf0be9ff4168af63447fbaaebed5dedda3b223ce61cda5edfd82a9fa46d75b64736f6c63430008180033",
+}
+
+// TrainersIdleABI is the input ABI used to generate the binding from.
+// Deprecated: Use TrainersIdleMetaData.ABI instead.
+var TrainersIdleABI = TrainersIdleMetaData.ABI
+
+// TrainersIdleBin is the compiled bytecode used for deploying new contracts.
+// Deprecated: Use TrainersIdleMetaData.Bin instead.
+var TrainersIdleBin = TrainersIdleMetaData.Bin
+
+// DeployTrainersIdle deploys a new Ethereum contract, binding an instance of TrainersIdle to it.
+func DeployTrainersIdle(auth *bind.TransactOpts, backend bind.ContractBackend, _trainersContract common.Address) (common.Address, *types.Transaction, *TrainersIdle, error) {
+	parsed, err := TrainersIdleMetaData.GetAbi()
+	if err != nil {
+		return common.Address{}, nil, nil, err
+	}
+	if parsed == nil {
+		return common.Address{}, nil, nil, errors.New("GetABI returned nil")
+	}
+
+	address, tx, contract, err := bind.DeployContract(auth, *parsed, common.FromHex(TrainersIdleBin), backend, _trainersContract)
+	if err != nil {
+		return common.Address{}, nil, nil, err
+	}
+	return address, tx, &TrainersIdle{TrainersIdleCaller: TrainersIdleCaller{contract: contract}, TrainersIdleTransactor: TrainersIdleTransactor{contract: contract}, TrainersIdleFilterer: TrainersIdleFilterer{contract: contract}}, nil
+}
+
+// TrainersIdle is an auto generated Go binding around an Ethereum contract.
+type TrainersIdle struct {
+	TrainersIdleCaller     // Read-only binding to the contract
+	TrainersIdleTransactor // Write-only binding to the contract
+	TrainersIdleFilterer   // Log filterer for contract events
+}
+
+// TrainersIdleCaller is an auto generated read-only Go binding around an Ethereum contract.
+type TrainersIdleCaller struct {
+	contract *bind.BoundContract // Generic contract wrapper for the low level calls
+}
+
+// TrainersIdleTransactor is an auto generated write-only Go binding around an Ethereum contract.
+type TrainersIdleTransactor struct {
+	contract *bind.BoundContract // Generic contract wrapper for the low level calls
+}
+
+// TrainersIdleFilterer is an auto generated log filtering Go binding around an Ethereum contract events.
+type TrainersIdleFilterer struct {
+	contract *bind.BoundContract // Generic contract wrapper for the low level calls
+}
+
+// TrainersIdleSession is an auto generated Go binding around an Ethereum contract,
+// with pre-set call and transact options.
+type TrainersIdleSession struct {
+	Contract     *TrainersIdle     // Generic contract binding to set the session for
+	CallOpts     bind.CallOpts     // Call options to use throughout this session
+	TransactOpts bind.TransactOpts // Transaction auth options to use throughout this session
+}
+
+// TrainersIdleCallerSession is an auto generated read-only Go binding around an Ethereum contract,
+// with pre-set call options.
+type TrainersIdleCallerSession struct {
+	Contract *TrainersIdleCaller // Generic contract caller binding to set the session for
+	CallOpts bind.CallOpts       // Call options to use throughout this session
+}
+
+// TrainersIdleTransactorSession is an auto generated write-only Go binding around an Ethereum contract,
+// with pre-set transact options.
+type TrainersIdleTransactorSession struct {
+	Contract     *TrainersIdleTransactor // Generic contract transactor binding to set the session for
+	TransactOpts bind.TransactOpts       // Transaction auth options to use throughout this session
+}
+
+// TrainersIdleRaw is an auto generated low-level Go binding around an Ethereum contract.
+type TrainersIdleRaw struct {
+	Contract *TrainersIdle // Generic contract binding to access the raw methods on
+}
+
+// TrainersIdleCallerRaw is an auto generated low-level read-only Go binding around an Ethereum contract.
+type TrainersIdleCallerRaw struct {
+	Contract *TrainersIdleCaller // Generic read-only contract binding to access the raw methods on
+}
+
+// TrainersIdleTransactorRaw is an auto generated low-level write-only Go binding around an Ethereum contract.
+type TrainersIdleTransactorRaw struct {
+	Contract *TrainersIdleTransactor // Generic write-only contract binding to access the raw methods on
+}
+
+// NewTrainersIdle creates a new instance of TrainersIdle, bound to a specific deployed contract.
+func NewTrainersIdle(address common.Address, backend bind.ContractBackend) (*TrainersIdle, error) {
+	contract, err := bindTrainersIdle(address, backend, backend, backend)
+	if err != nil {
+		return nil, err
+	}
+	return &TrainersIdle{TrainersIdleCaller: TrainersIdleCaller{contract: contract}, TrainersIdleTransactor: TrainersIdleTransactor{contract: contract}, TrainersIdleFilterer: TrainersIdleFilterer{contract: contract}}, nil
+}
+
+// NewTrainersIdleCaller creates a new read-only instance of TrainersIdle, bound to a specific deployed contract.
+func NewTrainersIdleCaller(address common.Address, caller bind.ContractCaller) (*TrainersIdleCaller, error) {
+	contract, err := bindTrainersIdle(address, caller, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+	return &TrainersIdleCaller{contract: contract}, nil
+}
+
+// NewTrainersIdleTransactor creates a new write-only instance of TrainersIdle, bound to a specific deployed contract.
+func NewTrainersIdleTransactor(address common.Address, transactor bind.ContractTransactor) (*TrainersIdleTransactor, error) {
+	contract, err := bindTrainersIdle(address, nil, transactor, nil)
+	if err != nil {
+		return nil, err
+	}
+	return &TrainersIdleTransactor{contract: contract}, nil
+}
+
+// NewTrainersIdleFilterer creates a new log filterer instance of TrainersIdle, bound to a specific deployed contract.
+func NewTrainersIdleFilterer(address common.Address, filterer bind.ContractFilterer) (*TrainersIdleFilterer, error) {
+	contract, err := bindTrainersIdle(address, nil, nil, filterer)
+	if err != nil {
+		return nil, err
+	}
+	return &TrainersIdleFilterer{contract: contract}, nil
+}
+
+// bindTrainersIdle binds a generic wrapper to an already deployed contract.
+func bindTrainersIdle(address common.Address, caller bind.ContractCaller, transactor bind.ContractTransactor, filterer bind.ContractFilterer) (*bind.BoundContract, error) {
+	parsed, err := TrainersIdleMetaData.GetAbi()
+	if err != nil {
+		return nil, err
+	}
+	return bind.NewBoundContract(address, *parsed, caller, transactor, filterer), nil
+}
+
+// Call invokes the (constant) contract method with params as input values and
+// sets the output to result. The result type might be a single field for simple
+// returns, a slice of interfaces for anonymous returns and a struct for named
+// returns.
+func (_TrainersIdle *TrainersIdleRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
+	return _TrainersIdle.Contract.TrainersIdleCaller.contract.Call(opts, result, method, params...)
+}
+
+// Transfer initiates a plain transaction to move funds to the contract, calling
+// its default method if one is available.
+func (_TrainersIdle *TrainersIdleRaw) Transfer(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.TrainersIdleTransactor.contract.Transfer(opts)
+}
+
+// Transact invokes the (paid) contract method with params as input values.
+func (_TrainersIdle *TrainersIdleRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.TrainersIdleTransactor.contract.Transact(opts, method, params...)
+}
+
+// Call invokes the (constant) contract method with params as input values and
+// sets the output to result. The result type might be a single field for simple
+// returns, a slice of interfaces for anonymous returns and a struct for named
+// returns.
+func (_TrainersIdle *TrainersIdleCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
+	return _TrainersIdle.Contract.contract.Call(opts, result, method, params...)
+}
+
+// Transfer initiates a plain transaction to move funds to the contract, calling
+// its default method if one is available.
+func (_TrainersIdle *TrainersIdleTransactorRaw) Transfer(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.contract.Transfer(opts)
+}
+
+// Transact invokes the (paid) contract method with params as input values.
+func (_TrainersIdle *TrainersIdleTransactorRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.contract.Transact(opts, method, params...)
+}
+
+// ACTIVETRAINERERROR is a free data retrieval call binding the contract method 0xfc39d25d.
+//
+// Solidity: function ACTIVE_TRAINER_ERROR() view returns(string)
+func (_TrainersIdle *TrainersIdleCaller) ACTIVETRAINERERROR(opts *bind.CallOpts) (string, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "ACTIVE_TRAINER_ERROR")
+
+	if err != nil {
+		return *new(string), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(string)).(*string)
+
+	return out0, err
+
+}
+
+// ACTIVETRAINERERROR is a free data retrieval call binding the contract method 0xfc39d25d.
+//
+// Solidity: function ACTIVE_TRAINER_ERROR() view returns(string)
+func (_TrainersIdle *TrainersIdleSession) ACTIVETRAINERERROR() (string, error) {
+	return _TrainersIdle.Contract.ACTIVETRAINERERROR(&_TrainersIdle.CallOpts)
+}
+
+// ACTIVETRAINERERROR is a free data retrieval call binding the contract method 0xfc39d25d.
+//
+// Solidity: function ACTIVE_TRAINER_ERROR() view returns(string)
+func (_TrainersIdle *TrainersIdleCallerSession) ACTIVETRAINERERROR() (string, error) {
+	return _TrainersIdle.Contract.ACTIVETRAINERERROR(&_TrainersIdle.CallOpts)
+}
+
+// CANTGETIT is a free data retrieval call binding the contract method 0xb601860c.
+//
+// Solidity: function CANT_GET_IT() view returns(string)
+func (_TrainersIdle *TrainersIdleCaller) CANTGETIT(opts *bind.CallOpts) (string, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "CANT_GET_IT")
+
+	if err != nil {
+		return *new(string), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(string)).(*string)
+
+	return out0, err
+
+}
+
+// CANTGETIT is a free data retrieval call binding the contract method 0xb601860c.
+//
+// Solidity: function CANT_GET_IT() view returns(string)
+func (_TrainersIdle *TrainersIdleSession) CANTGETIT() (string, error) {
+	return _TrainersIdle.Contract.CANTGETIT(&_TrainersIdle.CallOpts)
+}
+
+// CANTGETIT is a free data retrieval call binding the contract method 0xb601860c.
+//
+// Solidity: function CANT_GET_IT() view returns(string)
+func (_TrainersIdle *TrainersIdleCallerSession) CANTGETIT() (string, error) {
+	return _TrainersIdle.Contract.CANTGETIT(&_TrainersIdle.CallOpts)
+}
+
+// DEFAULTADMINROLE is a free data retrieval call binding the contract method 0xa217fddf.
+//
+// Solidity: function DEFAULT_ADMIN_ROLE() view returns(bytes32)
+func (_TrainersIdle *TrainersIdleCaller) DEFAULTADMINROLE(opts *bind.CallOpts) ([32]byte, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "DEFAULT_ADMIN_ROLE")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
+}
+
+// DEFAULTADMINROLE is a free data retrieval call binding the contract method 0xa217fddf.
+//
+// Solidity: function DEFAULT_ADMIN_ROLE() view returns(bytes32)
+func (_TrainersIdle *TrainersIdleSession) DEFAULTADMINROLE() ([32]byte, error) {
+	return _TrainersIdle.Contract.DEFAULTADMINROLE(&_TrainersIdle.CallOpts)
+}
+
+// DEFAULTADMINROLE is a free data retrieval call binding the contract method 0xa217fddf.
+//
+// Solidity: function DEFAULT_ADMIN_ROLE() view returns(bytes32)
+func (_TrainersIdle *TrainersIdleCallerSession) DEFAULTADMINROLE() ([32]byte, error) {
+	return _TrainersIdle.Contract.DEFAULTADMINROLE(&_TrainersIdle.CallOpts)
+}
+
+// EXECUTOR is a free data retrieval call binding the contract method 0x630dc7cb.
+//
+// Solidity: function EXECUTOR() view returns(bytes32)
+func (_TrainersIdle *TrainersIdleCaller) EXECUTOR(opts *bind.CallOpts) ([32]byte, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "EXECUTOR")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
+}
+
+// EXECUTOR is a free data retrieval call binding the contract method 0x630dc7cb.
+//
+// Solidity: function EXECUTOR() view returns(bytes32)
+func (_TrainersIdle *TrainersIdleSession) EXECUTOR() ([32]byte, error) {
+	return _TrainersIdle.Contract.EXECUTOR(&_TrainersIdle.CallOpts)
+}
+
+// EXECUTOR is a free data retrieval call binding the contract method 0x630dc7cb.
+//
+// Solidity: function EXECUTOR() view returns(bytes32)
+func (_TrainersIdle *TrainersIdleCallerSession) EXECUTOR() ([32]byte, error) {
+	return _TrainersIdle.Contract.EXECUTOR(&_TrainersIdle.CallOpts)
+}
+
+// MTRFEEERROR is a free data retrieval call binding the contract method 0x2c7d3c6c.
+//
+// Solidity: function MTR_FEE_ERROR() view returns(string)
+func (_TrainersIdle *TrainersIdleCaller) MTRFEEERROR(opts *bind.CallOpts) (string, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "MTR_FEE_ERROR")
+
+	if err != nil {
+		return *new(string), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(string)).(*string)
+
+	return out0, err
+
+}
+
+// MTRFEEERROR is a free data retrieval call binding the contract method 0x2c7d3c6c.
+//
+// Solidity: function MTR_FEE_ERROR() view returns(string)
+func (_TrainersIdle *TrainersIdleSession) MTRFEEERROR() (string, error) {
+	return _TrainersIdle.Contract.MTRFEEERROR(&_TrainersIdle.CallOpts)
+}
+
+// MTRFEEERROR is a free data retrieval call binding the contract method 0x2c7d3c6c.
+//
+// Solidity: function MTR_FEE_ERROR() view returns(string)
+func (_TrainersIdle *TrainersIdleCallerSession) MTRFEEERROR() (string, error) {
+	return _TrainersIdle.Contract.MTRFEEERROR(&_TrainersIdle.CallOpts)
+}
+
+// OWNERERROR is a free data retrieval call binding the contract method 0xa195777c.
+//
+// Solidity: function OWNER_ERROR() view returns(string)
+func (_TrainersIdle *TrainersIdleCaller) OWNERERROR(opts *bind.CallOpts) (string, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "OWNER_ERROR")
+
+	if err != nil {
+		return *new(string), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(string)).(*string)
+
+	return out0, err
+
+}
+
+// OWNERERROR is a free data retrieval call binding the contract method 0xa195777c.
+//
+// Solidity: function OWNER_ERROR() view returns(string)
+func (_TrainersIdle *TrainersIdleSession) OWNERERROR() (string, error) {
+	return _TrainersIdle.Contract.OWNERERROR(&_TrainersIdle.CallOpts)
+}
+
+// OWNERERROR is a free data retrieval call binding the contract method 0xa195777c.
+//
+// Solidity: function OWNER_ERROR() view returns(string)
+func (_TrainersIdle *TrainersIdleCallerSession) OWNERERROR() (string, error) {
+	return _TrainersIdle.Contract.OWNERERROR(&_TrainersIdle.CallOpts)
+}
+
+// ActivationBlock is a free data retrieval call binding the contract method 0x3c4141fd.
+//
+// Solidity: function activationBlock(uint256 _trainer) view returns(uint256)
+func (_TrainersIdle *TrainersIdleCaller) ActivationBlock(opts *bind.CallOpts, _trainer *big.Int) (*big.Int, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "activationBlock", _trainer)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// ActivationBlock is a free data retrieval call binding the contract method 0x3c4141fd.
+//
+// Solidity: function activationBlock(uint256 _trainer) view returns(uint256)
+func (_TrainersIdle *TrainersIdleSession) ActivationBlock(_trainer *big.Int) (*big.Int, error) {
+	return _TrainersIdle.Contract.ActivationBlock(&_TrainersIdle.CallOpts, _trainer)
+}
+
+// ActivationBlock is a free data retrieval call binding the contract method 0x3c4141fd.
+//
+// Solidity: function activationBlock(uint256 _trainer) view returns(uint256)
+func (_TrainersIdle *TrainersIdleCallerSession) ActivationBlock(_trainer *big.Int) (*big.Int, error) {
+	return _TrainersIdle.Contract.ActivationBlock(&_TrainersIdle.CallOpts, _trainer)
+}
+
+// CanGetItTrainerImprovement is a free data retrieval call binding the contract method 0xba9a2b13.
+//
+// Solidity: function canGetItTrainerImprovement(uint256 _t, uint256 _i) view returns(bool)
+func (_TrainersIdle *TrainersIdleCaller) CanGetItTrainerImprovement(opts *bind.CallOpts, _t *big.Int, _i *big.Int) (bool, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "canGetItTrainerImprovement", _t, _i)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
+}
+
+// CanGetItTrainerImprovement is a free data retrieval call binding the contract method 0xba9a2b13.
+//
+// Solidity: function canGetItTrainerImprovement(uint256 _t, uint256 _i) view returns(bool)
+func (_TrainersIdle *TrainersIdleSession) CanGetItTrainerImprovement(_t *big.Int, _i *big.Int) (bool, error) {
+	return _TrainersIdle.Contract.CanGetItTrainerImprovement(&_TrainersIdle.CallOpts, _t, _i)
+}
+
+// CanGetItTrainerImprovement is a free data retrieval call binding the contract method 0xba9a2b13.
+//
+// Solidity: function canGetItTrainerImprovement(uint256 _t, uint256 _i) view returns(bool)
+func (_TrainersIdle *TrainersIdleCallerSession) CanGetItTrainerImprovement(_t *big.Int, _i *big.Int) (bool, error) {
+	return _TrainersIdle.Contract.CanGetItTrainerImprovement(&_TrainersIdle.CallOpts, _t, _i)
+}
+
+// Config is a free data retrieval call binding the contract method 0x82d5a8f0.
+//
+// Solidity: function config_() view returns(uint8 projectPercentage, uint256 pPerBlock, uint256 pPerTrans, uint256 feeMTR, uint256 startBlock, uint256 maxWinners)
+func (_TrainersIdle *TrainersIdleCaller) Config(opts *bind.CallOpts) (struct {
+	ProjectPercentage uint8
+	PPerBlock         *big.Int
+	PPerTrans         *big.Int
+	FeeMTR            *big.Int
+	StartBlock        *big.Int
+	MaxWinners        *big.Int
+}, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "config_")
+
+	outstruct := new(struct {
+		ProjectPercentage uint8
+		PPerBlock         *big.Int
+		PPerTrans         *big.Int
+		FeeMTR            *big.Int
+		StartBlock        *big.Int
+		MaxWinners        *big.Int
+	})
+	if err != nil {
+		return *outstruct, err
+	}
+
+	outstruct.ProjectPercentage = *abi.ConvertType(out[0], new(uint8)).(*uint8)
+	outstruct.PPerBlock = *abi.ConvertType(out[1], new(*big.Int)).(**big.Int)
+	outstruct.PPerTrans = *abi.ConvertType(out[2], new(*big.Int)).(**big.Int)
+	outstruct.FeeMTR = *abi.ConvertType(out[3], new(*big.Int)).(**big.Int)
+	outstruct.StartBlock = *abi.ConvertType(out[4], new(*big.Int)).(**big.Int)
+	outstruct.MaxWinners = *abi.ConvertType(out[5], new(*big.Int)).(**big.Int)
+
+	return *outstruct, err
+
+}
+
+// Config is a free data retrieval call binding the contract method 0x82d5a8f0.
+//
+// Solidity: function config_() view returns(uint8 projectPercentage, uint256 pPerBlock, uint256 pPerTrans, uint256 feeMTR, uint256 startBlock, uint256 maxWinners)
+func (_TrainersIdle *TrainersIdleSession) Config() (struct {
+	ProjectPercentage uint8
+	PPerBlock         *big.Int
+	PPerTrans         *big.Int
+	FeeMTR            *big.Int
+	StartBlock        *big.Int
+	MaxWinners        *big.Int
+}, error) {
+	return _TrainersIdle.Contract.Config(&_TrainersIdle.CallOpts)
+}
+
+// Config is a free data retrieval call binding the contract method 0x82d5a8f0.
+//
+// Solidity: function config_() view returns(uint8 projectPercentage, uint256 pPerBlock, uint256 pPerTrans, uint256 feeMTR, uint256 startBlock, uint256 maxWinners)
+func (_TrainersIdle *TrainersIdleCallerSession) Config() (struct {
+	ProjectPercentage uint8
+	PPerBlock         *big.Int
+	PPerTrans         *big.Int
+	FeeMTR            *big.Int
+	StartBlock        *big.Int
+	MaxWinners        *big.Int
+}, error) {
+	return _TrainersIdle.Contract.Config(&_TrainersIdle.CallOpts)
+}
+
+// GetContractData is a free data retrieval call binding the contract method 0xc802748c.
+//
+// Solidity: function getContractData(uint256 _to, uint256 _trainer) view returns((bool,uint256,uint256,uint256,uint256,uint256,uint256,uint256,(uint256,uint256),(uint8,uint256,uint256,uint256,uint256,uint256),(uint256,uint256)[],bool[],uint8[],uint256[]))
+func (_TrainersIdle *TrainersIdleCaller) GetContractData(opts *bind.CallOpts, _to *big.Int, _trainer *big.Int) (TrainersIDLEContractData, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "getContractData", _to, _trainer)
+
+	if err != nil {
+		return *new(TrainersIDLEContractData), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(TrainersIDLEContractData)).(*TrainersIDLEContractData)
+
+	return out0, err
+
+}
+
+// GetContractData is a free data retrieval call binding the contract method 0xc802748c.
+//
+// Solidity: function getContractData(uint256 _to, uint256 _trainer) view returns((bool,uint256,uint256,uint256,uint256,uint256,uint256,uint256,(uint256,uint256),(uint8,uint256,uint256,uint256,uint256,uint256),(uint256,uint256)[],bool[],uint8[],uint256[]))
+func (_TrainersIdle *TrainersIdleSession) GetContractData(_to *big.Int, _trainer *big.Int) (TrainersIDLEContractData, error) {
+	return _TrainersIdle.Contract.GetContractData(&_TrainersIdle.CallOpts, _to, _trainer)
+}
+
+// GetContractData is a free data retrieval call binding the contract method 0xc802748c.
+//
+// Solidity: function getContractData(uint256 _to, uint256 _trainer) view returns((bool,uint256,uint256,uint256,uint256,uint256,uint256,uint256,(uint256,uint256),(uint8,uint256,uint256,uint256,uint256,uint256),(uint256,uint256)[],bool[],uint8[],uint256[]))
+func (_TrainersIdle *TrainersIdleCallerSession) GetContractData(_to *big.Int, _trainer *big.Int) (TrainersIDLEContractData, error) {
+	return _TrainersIdle.Contract.GetContractData(&_TrainersIdle.CallOpts, _to, _trainer)
+}
+
+// GetRoleAdmin is a free data retrieval call binding the contract method 0x248a9ca3.
+//
+// Solidity: function getRoleAdmin(bytes32 role) view returns(bytes32)
+func (_TrainersIdle *TrainersIdleCaller) GetRoleAdmin(opts *bind.CallOpts, role [32]byte) ([32]byte, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "getRoleAdmin", role)
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
+}
+
+// GetRoleAdmin is a free data retrieval call binding the contract method 0x248a9ca3.
+//
+// Solidity: function getRoleAdmin(bytes32 role) view returns(bytes32)
+func (_TrainersIdle *TrainersIdleSession) GetRoleAdmin(role [32]byte) ([32]byte, error) {
+	return _TrainersIdle.Contract.GetRoleAdmin(&_TrainersIdle.CallOpts, role)
+}
+
+// GetRoleAdmin is a free data retrieval call binding the contract method 0x248a9ca3.
+//
+// Solidity: function getRoleAdmin(bytes32 role) view returns(bytes32)
+func (_TrainersIdle *TrainersIdleCallerSession) GetRoleAdmin(role [32]byte) ([32]byte, error) {
+	return _TrainersIdle.Contract.GetRoleAdmin(&_TrainersIdle.CallOpts, role)
+}
+
+// GetTakedFees is a free data retrieval call binding the contract method 0xae805057.
+//
+// Solidity: function getTakedFees() view returns(uint256)
+func (_TrainersIdle *TrainersIdleCaller) GetTakedFees(opts *bind.CallOpts) (*big.Int, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "getTakedFees")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// GetTakedFees is a free data retrieval call binding the contract method 0xae805057.
+//
+// Solidity: function getTakedFees() view returns(uint256)
+func (_TrainersIdle *TrainersIdleSession) GetTakedFees() (*big.Int, error) {
+	return _TrainersIdle.Contract.GetTakedFees(&_TrainersIdle.CallOpts)
+}
+
+// GetTakedFees is a free data retrieval call binding the contract method 0xae805057.
+//
+// Solidity: function getTakedFees() view returns(uint256)
+func (_TrainersIdle *TrainersIdleCallerSession) GetTakedFees() (*big.Int, error) {
+	return _TrainersIdle.Contract.GetTakedFees(&_TrainersIdle.CallOpts)
+}
+
+// GetTrainerData is a free data retrieval call binding the contract method 0x2a080a75.
+//
+// Solidity: function getTrainerData(uint256 _t) view returns((uint256,uint256))
+func (_TrainersIdle *TrainersIdleCaller) GetTrainerData(opts *bind.CallOpts, _t *big.Int) (TrainersIDLEEntityData, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "getTrainerData", _t)
+
+	if err != nil {
+		return *new(TrainersIDLEEntityData), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(TrainersIDLEEntityData)).(*TrainersIDLEEntityData)
+
+	return out0, err
+
+}
+
+// GetTrainerData is a free data retrieval call binding the contract method 0x2a080a75.
+//
+// Solidity: function getTrainerData(uint256 _t) view returns((uint256,uint256))
+func (_TrainersIdle *TrainersIdleSession) GetTrainerData(_t *big.Int) (TrainersIDLEEntityData, error) {
+	return _TrainersIdle.Contract.GetTrainerData(&_TrainersIdle.CallOpts, _t)
+}
+
+// GetTrainerData is a free data retrieval call binding the contract method 0x2a080a75.
+//
+// Solidity: function getTrainerData(uint256 _t) view returns((uint256,uint256))
+func (_TrainersIdle *TrainersIdleCallerSession) GetTrainerData(_t *big.Int) (TrainersIDLEEntityData, error) {
+	return _TrainersIdle.Contract.GetTrainerData(&_TrainersIdle.CallOpts, _t)
+}
+
+// GetTrainerImprovements is a free data retrieval call binding the contract method 0xa036db5c.
+//
+// Solidity: function getTrainerImprovements(uint256 _to, uint256 _t) view returns(bool[])
+func (_TrainersIdle *TrainersIdleCaller) GetTrainerImprovements(opts *bind.CallOpts, _to *big.Int, _t *big.Int) ([]bool, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "getTrainerImprovements", _to, _t)
+
+	if err != nil {
+		return *new([]bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]bool)).(*[]bool)
+
+	return out0, err
+
+}
+
+// GetTrainerImprovements is a free data retrieval call binding the contract method 0xa036db5c.
+//
+// Solidity: function getTrainerImprovements(uint256 _to, uint256 _t) view returns(bool[])
+func (_TrainersIdle *TrainersIdleSession) GetTrainerImprovements(_to *big.Int, _t *big.Int) ([]bool, error) {
+	return _TrainersIdle.Contract.GetTrainerImprovements(&_TrainersIdle.CallOpts, _to, _t)
+}
+
+// GetTrainerImprovements is a free data retrieval call binding the contract method 0xa036db5c.
+//
+// Solidity: function getTrainerImprovements(uint256 _to, uint256 _t) view returns(bool[])
+func (_TrainersIdle *TrainersIdleCallerSession) GetTrainerImprovements(_to *big.Int, _t *big.Int) ([]bool, error) {
+	return _TrainersIdle.Contract.GetTrainerImprovements(&_TrainersIdle.CallOpts, _to, _t)
+}
+
+// GetTrainersImprovements is a free data retrieval call binding the contract method 0xb7c7dbf9.
+//
+// Solidity: function getTrainersImprovements(uint256 _to) view returns((uint256,uint256)[])
+func (_TrainersIdle *TrainersIdleCaller) GetTrainersImprovements(opts *bind.CallOpts, _to *big.Int) ([]TrainersIDLEImprovement, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "getTrainersImprovements", _to)
+
+	if err != nil {
+		return *new([]TrainersIDLEImprovement), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]TrainersIDLEImprovement)).(*[]TrainersIDLEImprovement)
+
+	return out0, err
+
+}
+
+// GetTrainersImprovements is a free data retrieval call binding the contract method 0xb7c7dbf9.
+//
+// Solidity: function getTrainersImprovements(uint256 _to) view returns((uint256,uint256)[])
+func (_TrainersIdle *TrainersIdleSession) GetTrainersImprovements(_to *big.Int) ([]TrainersIDLEImprovement, error) {
+	return _TrainersIdle.Contract.GetTrainersImprovements(&_TrainersIdle.CallOpts, _to)
+}
+
+// GetTrainersImprovements is a free data retrieval call binding the contract method 0xb7c7dbf9.
+//
+// Solidity: function getTrainersImprovements(uint256 _to) view returns((uint256,uint256)[])
+func (_TrainersIdle *TrainersIdleCallerSession) GetTrainersImprovements(_to *big.Int) ([]TrainersIDLEImprovement, error) {
+	return _TrainersIdle.Contract.GetTrainersImprovements(&_TrainersIdle.CallOpts, _to)
+}
+
+// GetUserFeesBalance is a free data retrieval call binding the contract method 0x9e857ad8.
+//
+// Solidity: function getUserFeesBalance(address _e) view returns(uint256)
+func (_TrainersIdle *TrainersIdleCaller) GetUserFeesBalance(opts *bind.CallOpts, _e common.Address) (*big.Int, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "getUserFeesBalance", _e)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// GetUserFeesBalance is a free data retrieval call binding the contract method 0x9e857ad8.
+//
+// Solidity: function getUserFeesBalance(address _e) view returns(uint256)
+func (_TrainersIdle *TrainersIdleSession) GetUserFeesBalance(_e common.Address) (*big.Int, error) {
+	return _TrainersIdle.Contract.GetUserFeesBalance(&_TrainersIdle.CallOpts, _e)
+}
+
+// GetUserFeesBalance is a free data retrieval call binding the contract method 0x9e857ad8.
+//
+// Solidity: function getUserFeesBalance(address _e) view returns(uint256)
+func (_TrainersIdle *TrainersIdleCallerSession) GetUserFeesBalance(_e common.Address) (*big.Int, error) {
+	return _TrainersIdle.Contract.GetUserFeesBalance(&_TrainersIdle.CallOpts, _e)
+}
+
+// GetUserRewardsValues is a free data retrieval call binding the contract method 0xb96f141b.
+//
+// Solidity: function getUserRewardsValues(uint256 _max) view returns(uint256[])
+func (_TrainersIdle *TrainersIdleCaller) GetUserRewardsValues(opts *bind.CallOpts, _max *big.Int) ([]*big.Int, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "getUserRewardsValues", _max)
+
+	if err != nil {
+		return *new([]*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]*big.Int)).(*[]*big.Int)
+
+	return out0, err
+
+}
+
+// GetUserRewardsValues is a free data retrieval call binding the contract method 0xb96f141b.
+//
+// Solidity: function getUserRewardsValues(uint256 _max) view returns(uint256[])
+func (_TrainersIdle *TrainersIdleSession) GetUserRewardsValues(_max *big.Int) ([]*big.Int, error) {
+	return _TrainersIdle.Contract.GetUserRewardsValues(&_TrainersIdle.CallOpts, _max)
+}
+
+// GetUserRewardsValues is a free data retrieval call binding the contract method 0xb96f141b.
+//
+// Solidity: function getUserRewardsValues(uint256 _max) view returns(uint256[])
+func (_TrainersIdle *TrainersIdleCallerSession) GetUserRewardsValues(_max *big.Int) ([]*big.Int, error) {
+	return _TrainersIdle.Contract.GetUserRewardsValues(&_TrainersIdle.CallOpts, _max)
+}
+
+// GetUsersRewardsPercentages is a free data retrieval call binding the contract method 0x94410135.
+//
+// Solidity: function getUsersRewardsPercentages(uint256 _max) view returns(uint8[])
+func (_TrainersIdle *TrainersIdleCaller) GetUsersRewardsPercentages(opts *bind.CallOpts, _max *big.Int) ([]uint8, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "getUsersRewardsPercentages", _max)
+
+	if err != nil {
+		return *new([]uint8), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]uint8)).(*[]uint8)
+
+	return out0, err
+
+}
+
+// GetUsersRewardsPercentages is a free data retrieval call binding the contract method 0x94410135.
+//
+// Solidity: function getUsersRewardsPercentages(uint256 _max) view returns(uint8[])
+func (_TrainersIdle *TrainersIdleSession) GetUsersRewardsPercentages(_max *big.Int) ([]uint8, error) {
+	return _TrainersIdle.Contract.GetUsersRewardsPercentages(&_TrainersIdle.CallOpts, _max)
+}
+
+// GetUsersRewardsPercentages is a free data retrieval call binding the contract method 0x94410135.
+//
+// Solidity: function getUsersRewardsPercentages(uint256 _max) view returns(uint8[])
+func (_TrainersIdle *TrainersIdleCallerSession) GetUsersRewardsPercentages(_max *big.Int) ([]uint8, error) {
+	return _TrainersIdle.Contract.GetUsersRewardsPercentages(&_TrainersIdle.CallOpts, _max)
+}
+
+// HasEnoughtForTrainerI is a free data retrieval call binding the contract method 0x1c8b2f02.
+//
+// Solidity: function hasEnoughtForTrainerI(uint256 _t, uint256 _i) view returns(bool)
+func (_TrainersIdle *TrainersIdleCaller) HasEnoughtForTrainerI(opts *bind.CallOpts, _t *big.Int, _i *big.Int) (bool, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "hasEnoughtForTrainerI", _t, _i)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
+}
+
+// HasEnoughtForTrainerI is a free data retrieval call binding the contract method 0x1c8b2f02.
+//
+// Solidity: function hasEnoughtForTrainerI(uint256 _t, uint256 _i) view returns(bool)
+func (_TrainersIdle *TrainersIdleSession) HasEnoughtForTrainerI(_t *big.Int, _i *big.Int) (bool, error) {
+	return _TrainersIdle.Contract.HasEnoughtForTrainerI(&_TrainersIdle.CallOpts, _t, _i)
+}
+
+// HasEnoughtForTrainerI is a free data retrieval call binding the contract method 0x1c8b2f02.
+//
+// Solidity: function hasEnoughtForTrainerI(uint256 _t, uint256 _i) view returns(bool)
+func (_TrainersIdle *TrainersIdleCallerSession) HasEnoughtForTrainerI(_t *big.Int, _i *big.Int) (bool, error) {
+	return _TrainersIdle.Contract.HasEnoughtForTrainerI(&_TrainersIdle.CallOpts, _t, _i)
+}
+
+// HasRole is a free data retrieval call binding the contract method 0x91d14854.
+//
+// Solidity: function hasRole(bytes32 role, address account) view returns(bool)
+func (_TrainersIdle *TrainersIdleCaller) HasRole(opts *bind.CallOpts, role [32]byte, account common.Address) (bool, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "hasRole", role, account)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
+}
+
+// HasRole is a free data retrieval call binding the contract method 0x91d14854.
+//
+// Solidity: function hasRole(bytes32 role, address account) view returns(bool)
+func (_TrainersIdle *TrainersIdleSession) HasRole(role [32]byte, account common.Address) (bool, error) {
+	return _TrainersIdle.Contract.HasRole(&_TrainersIdle.CallOpts, role, account)
+}
+
+// HasRole is a free data retrieval call binding the contract method 0x91d14854.
+//
+// Solidity: function hasRole(bytes32 role, address account) view returns(bool)
+func (_TrainersIdle *TrainersIdleCallerSession) HasRole(role [32]byte, account common.Address) (bool, error) {
+	return _TrainersIdle.Contract.HasRole(&_TrainersIdle.CallOpts, role, account)
+}
+
+// IdleBlocks is a free data retrieval call binding the contract method 0xd014a343.
+//
+// Solidity: function idleBlocks(uint256 _trainer) view returns(uint256)
+func (_TrainersIdle *TrainersIdleCaller) IdleBlocks(opts *bind.CallOpts, _trainer *big.Int) (*big.Int, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "idleBlocks", _trainer)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// IdleBlocks is a free data retrieval call binding the contract method 0xd014a343.
+//
+// Solidity: function idleBlocks(uint256 _trainer) view returns(uint256)
+func (_TrainersIdle *TrainersIdleSession) IdleBlocks(_trainer *big.Int) (*big.Int, error) {
+	return _TrainersIdle.Contract.IdleBlocks(&_TrainersIdle.CallOpts, _trainer)
+}
+
+// IdleBlocks is a free data retrieval call binding the contract method 0xd014a343.
+//
+// Solidity: function idleBlocks(uint256 _trainer) view returns(uint256)
+func (_TrainersIdle *TrainersIdleCallerSession) IdleBlocks(_trainer *big.Int) (*big.Int, error) {
+	return _TrainersIdle.Contract.IdleBlocks(&_TrainersIdle.CallOpts, _trainer)
+}
+
+// IsActive is a free data retrieval call binding the contract method 0x82afd23b.
+//
+// Solidity: function isActive(uint256 _trainer) view returns(bool)
+func (_TrainersIdle *TrainersIdleCaller) IsActive(opts *bind.CallOpts, _trainer *big.Int) (bool, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "isActive", _trainer)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
+}
+
+// IsActive is a free data retrieval call binding the contract method 0x82afd23b.
+//
+// Solidity: function isActive(uint256 _trainer) view returns(bool)
+func (_TrainersIdle *TrainersIdleSession) IsActive(_trainer *big.Int) (bool, error) {
+	return _TrainersIdle.Contract.IsActive(&_TrainersIdle.CallOpts, _trainer)
+}
+
+// IsActive is a free data retrieval call binding the contract method 0x82afd23b.
+//
+// Solidity: function isActive(uint256 _trainer) view returns(bool)
+func (_TrainersIdle *TrainersIdleCallerSession) IsActive(_trainer *big.Int) (bool, error) {
+	return _TrainersIdle.Contract.IsActive(&_TrainersIdle.CallOpts, _trainer)
+}
+
+// SupportsInterface is a free data retrieval call binding the contract method 0x01ffc9a7.
+//
+// Solidity: function supportsInterface(bytes4 interfaceId) view returns(bool)
+func (_TrainersIdle *TrainersIdleCaller) SupportsInterface(opts *bind.CallOpts, interfaceId [4]byte) (bool, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "supportsInterface", interfaceId)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
+}
+
+// SupportsInterface is a free data retrieval call binding the contract method 0x01ffc9a7.
+//
+// Solidity: function supportsInterface(bytes4 interfaceId) view returns(bool)
+func (_TrainersIdle *TrainersIdleSession) SupportsInterface(interfaceId [4]byte) (bool, error) {
+	return _TrainersIdle.Contract.SupportsInterface(&_TrainersIdle.CallOpts, interfaceId)
+}
+
+// SupportsInterface is a free data retrieval call binding the contract method 0x01ffc9a7.
+//
+// Solidity: function supportsInterface(bytes4 interfaceId) view returns(bool)
+func (_TrainersIdle *TrainersIdleCallerSession) SupportsInterface(interfaceId [4]byte) (bool, error) {
+	return _TrainersIdle.Contract.SupportsInterface(&_TrainersIdle.CallOpts, interfaceId)
+}
+
+// TrainerHadImprovement is a free data retrieval call binding the contract method 0x1e9b26e3.
+//
+// Solidity: function trainerHadImprovement(uint256 _t, uint256 _i) view returns(bool)
+func (_TrainersIdle *TrainersIdleCaller) TrainerHadImprovement(opts *bind.CallOpts, _t *big.Int, _i *big.Int) (bool, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "trainerHadImprovement", _t, _i)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
+}
+
+// TrainerHadImprovement is a free data retrieval call binding the contract method 0x1e9b26e3.
+//
+// Solidity: function trainerHadImprovement(uint256 _t, uint256 _i) view returns(bool)
+func (_TrainersIdle *TrainersIdleSession) TrainerHadImprovement(_t *big.Int, _i *big.Int) (bool, error) {
+	return _TrainersIdle.Contract.TrainerHadImprovement(&_TrainersIdle.CallOpts, _t, _i)
+}
+
+// TrainerHadImprovement is a free data retrieval call binding the contract method 0x1e9b26e3.
+//
+// Solidity: function trainerHadImprovement(uint256 _t, uint256 _i) view returns(bool)
+func (_TrainersIdle *TrainersIdleCallerSession) TrainerHadImprovement(_t *big.Int, _i *big.Int) (bool, error) {
+	return _TrainersIdle.Contract.TrainerHadImprovement(&_TrainersIdle.CallOpts, _t, _i)
+}
+
+// Trainers is a free data retrieval call binding the contract method 0xe2c579a4.
+//
+// Solidity: function trainers_() view returns(address)
+func (_TrainersIdle *TrainersIdleCaller) Trainers(opts *bind.CallOpts) (common.Address, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "trainers_")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
+}
+
+// Trainers is a free data retrieval call binding the contract method 0xe2c579a4.
+//
+// Solidity: function trainers_() view returns(address)
+func (_TrainersIdle *TrainersIdleSession) Trainers() (common.Address, error) {
+	return _TrainersIdle.Contract.Trainers(&_TrainersIdle.CallOpts)
+}
+
+// Trainers is a free data retrieval call binding the contract method 0xe2c579a4.
+//
+// Solidity: function trainers_() view returns(address)
+func (_TrainersIdle *TrainersIdleCallerSession) Trainers() (common.Address, error) {
+	return _TrainersIdle.Contract.Trainers(&_TrainersIdle.CallOpts)
+}
+
+// TransactionPoints is a free data retrieval call binding the contract method 0x769cdfa4.
+//
+// Solidity: function transactionPoints(uint256 _t) view returns(uint256)
+func (_TrainersIdle *TrainersIdleCaller) TransactionPoints(opts *bind.CallOpts, _t *big.Int) (*big.Int, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "transactionPoints", _t)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// TransactionPoints is a free data retrieval call binding the contract method 0x769cdfa4.
+//
+// Solidity: function transactionPoints(uint256 _t) view returns(uint256)
+func (_TrainersIdle *TrainersIdleSession) TransactionPoints(_t *big.Int) (*big.Int, error) {
+	return _TrainersIdle.Contract.TransactionPoints(&_TrainersIdle.CallOpts, _t)
+}
+
+// TransactionPoints is a free data retrieval call binding the contract method 0x769cdfa4.
+//
+// Solidity: function transactionPoints(uint256 _t) view returns(uint256)
+func (_TrainersIdle *TrainersIdleCallerSession) TransactionPoints(_t *big.Int) (*big.Int, error) {
+	return _TrainersIdle.Contract.TransactionPoints(&_TrainersIdle.CallOpts, _t)
+}
+
+// UnlockedIdlePoints is a free data retrieval call binding the contract method 0x3d95d225.
+//
+// Solidity: function unlockedIdlePoints(uint256 _t) view returns(uint256)
+func (_TrainersIdle *TrainersIdleCaller) UnlockedIdlePoints(opts *bind.CallOpts, _t *big.Int) (*big.Int, error) {
+	var out []interface{}
+	err := _TrainersIdle.contract.Call(opts, &out, "unlockedIdlePoints", _t)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// UnlockedIdlePoints is a free data retrieval call binding the contract method 0x3d95d225.
+//
+// Solidity: function unlockedIdlePoints(uint256 _t) view returns(uint256)
+func (_TrainersIdle *TrainersIdleSession) UnlockedIdlePoints(_t *big.Int) (*big.Int, error) {
+	return _TrainersIdle.Contract.UnlockedIdlePoints(&_TrainersIdle.CallOpts, _t)
+}
+
+// UnlockedIdlePoints is a free data retrieval call binding the contract method 0x3d95d225.
+//
+// Solidity: function unlockedIdlePoints(uint256 _t) view returns(uint256)
+func (_TrainersIdle *TrainersIdleCallerSession) UnlockedIdlePoints(_t *big.Int) (*big.Int, error) {
+	return _TrainersIdle.Contract.UnlockedIdlePoints(&_TrainersIdle.CallOpts, _t)
+}
+
+// BuyTrainerImprovement is a paid mutator transaction binding the contract method 0x38cf6da7.
+//
+// Solidity: function buyTrainerImprovement(address _e, uint256 _t, uint256 _i) returns()
+func (_TrainersIdle *TrainersIdleTransactor) BuyTrainerImprovement(opts *bind.TransactOpts, _e common.Address, _t *big.Int, _i *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.contract.Transact(opts, "buyTrainerImprovement", _e, _t, _i)
+}
+
+// BuyTrainerImprovement is a paid mutator transaction binding the contract method 0x38cf6da7.
+//
+// Solidity: function buyTrainerImprovement(address _e, uint256 _t, uint256 _i) returns()
+func (_TrainersIdle *TrainersIdleSession) BuyTrainerImprovement(_e common.Address, _t *big.Int, _i *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.BuyTrainerImprovement(&_TrainersIdle.TransactOpts, _e, _t, _i)
+}
+
+// BuyTrainerImprovement is a paid mutator transaction binding the contract method 0x38cf6da7.
+//
+// Solidity: function buyTrainerImprovement(address _e, uint256 _t, uint256 _i) returns()
+func (_TrainersIdle *TrainersIdleTransactorSession) BuyTrainerImprovement(_e common.Address, _t *big.Int, _i *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.BuyTrainerImprovement(&_TrainersIdle.TransactOpts, _e, _t, _i)
+}
+
+// CollectIDLEPoints is a paid mutator transaction binding the contract method 0x9db137e7.
+//
+// Solidity: function collectIDLEPoints(address _e, uint256 _trainer) returns()
+func (_TrainersIdle *TrainersIdleTransactor) CollectIDLEPoints(opts *bind.TransactOpts, _e common.Address, _trainer *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.contract.Transact(opts, "collectIDLEPoints", _e, _trainer)
+}
+
+// CollectIDLEPoints is a paid mutator transaction binding the contract method 0x9db137e7.
+//
+// Solidity: function collectIDLEPoints(address _e, uint256 _trainer) returns()
+func (_TrainersIdle *TrainersIdleSession) CollectIDLEPoints(_e common.Address, _trainer *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.CollectIDLEPoints(&_TrainersIdle.TransactOpts, _e, _trainer)
+}
+
+// CollectIDLEPoints is a paid mutator transaction binding the contract method 0x9db137e7.
+//
+// Solidity: function collectIDLEPoints(address _e, uint256 _trainer) returns()
+func (_TrainersIdle *TrainersIdleTransactorSession) CollectIDLEPoints(_e common.Address, _trainer *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.CollectIDLEPoints(&_TrainersIdle.TransactOpts, _e, _trainer)
+}
+
+// CollectTransPoints is a paid mutator transaction binding the contract method 0x5f6846fa.
+//
+// Solidity: function collectTransPoints(address _e, uint256 _trainer) returns()
+func (_TrainersIdle *TrainersIdleTransactor) CollectTransPoints(opts *bind.TransactOpts, _e common.Address, _trainer *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.contract.Transact(opts, "collectTransPoints", _e, _trainer)
+}
+
+// CollectTransPoints is a paid mutator transaction binding the contract method 0x5f6846fa.
+//
+// Solidity: function collectTransPoints(address _e, uint256 _trainer) returns()
+func (_TrainersIdle *TrainersIdleSession) CollectTransPoints(_e common.Address, _trainer *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.CollectTransPoints(&_TrainersIdle.TransactOpts, _e, _trainer)
+}
+
+// CollectTransPoints is a paid mutator transaction binding the contract method 0x5f6846fa.
+//
+// Solidity: function collectTransPoints(address _e, uint256 _trainer) returns()
+func (_TrainersIdle *TrainersIdleTransactorSession) CollectTransPoints(_e common.Address, _trainer *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.CollectTransPoints(&_TrainersIdle.TransactOpts, _e, _trainer)
+}
+
+// GrantRole is a paid mutator transaction binding the contract method 0x2f2ff15d.
+//
+// Solidity: function grantRole(bytes32 role, address account) returns()
+func (_TrainersIdle *TrainersIdleTransactor) GrantRole(opts *bind.TransactOpts, role [32]byte, account common.Address) (*types.Transaction, error) {
+	return _TrainersIdle.contract.Transact(opts, "grantRole", role, account)
+}
+
+// GrantRole is a paid mutator transaction binding the contract method 0x2f2ff15d.
+//
+// Solidity: function grantRole(bytes32 role, address account) returns()
+func (_TrainersIdle *TrainersIdleSession) GrantRole(role [32]byte, account common.Address) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.GrantRole(&_TrainersIdle.TransactOpts, role, account)
+}
+
+// GrantRole is a paid mutator transaction binding the contract method 0x2f2ff15d.
+//
+// Solidity: function grantRole(bytes32 role, address account) returns()
+func (_TrainersIdle *TrainersIdleTransactorSession) GrantRole(role [32]byte, account common.Address) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.GrantRole(&_TrainersIdle.TransactOpts, role, account)
+}
+
+// InjectBalance is a paid mutator transaction binding the contract method 0x95652eba.
+//
+// Solidity: function injectBalance() payable returns()
+func (_TrainersIdle *TrainersIdleTransactor) InjectBalance(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _TrainersIdle.contract.Transact(opts, "injectBalance")
+}
+
+// InjectBalance is a paid mutator transaction binding the contract method 0x95652eba.
+//
+// Solidity: function injectBalance() payable returns()
+func (_TrainersIdle *TrainersIdleSession) InjectBalance() (*types.Transaction, error) {
+	return _TrainersIdle.Contract.InjectBalance(&_TrainersIdle.TransactOpts)
+}
+
+// InjectBalance is a paid mutator transaction binding the contract method 0x95652eba.
+//
+// Solidity: function injectBalance() payable returns()
+func (_TrainersIdle *TrainersIdleTransactorSession) InjectBalance() (*types.Transaction, error) {
+	return _TrainersIdle.Contract.InjectBalance(&_TrainersIdle.TransactOpts)
+}
+
+// JoinWithTrainer is a paid mutator transaction binding the contract method 0x4bce1b87.
+//
+// Solidity: function joinWithTrainer(address _e, uint256 _trainer) returns()
+func (_TrainersIdle *TrainersIdleTransactor) JoinWithTrainer(opts *bind.TransactOpts, _e common.Address, _trainer *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.contract.Transact(opts, "joinWithTrainer", _e, _trainer)
+}
+
+// JoinWithTrainer is a paid mutator transaction binding the contract method 0x4bce1b87.
+//
+// Solidity: function joinWithTrainer(address _e, uint256 _trainer) returns()
+func (_TrainersIdle *TrainersIdleSession) JoinWithTrainer(_e common.Address, _trainer *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.JoinWithTrainer(&_TrainersIdle.TransactOpts, _e, _trainer)
+}
+
+// JoinWithTrainer is a paid mutator transaction binding the contract method 0x4bce1b87.
+//
+// Solidity: function joinWithTrainer(address _e, uint256 _trainer) returns()
+func (_TrainersIdle *TrainersIdleTransactorSession) JoinWithTrainer(_e common.Address, _trainer *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.JoinWithTrainer(&_TrainersIdle.TransactOpts, _e, _trainer)
+}
+
+// RenounceRole is a paid mutator transaction binding the contract method 0x36568abe.
+//
+// Solidity: function renounceRole(bytes32 role, address account) returns()
+func (_TrainersIdle *TrainersIdleTransactor) RenounceRole(opts *bind.TransactOpts, role [32]byte, account common.Address) (*types.Transaction, error) {
+	return _TrainersIdle.contract.Transact(opts, "renounceRole", role, account)
+}
+
+// RenounceRole is a paid mutator transaction binding the contract method 0x36568abe.
+//
+// Solidity: function renounceRole(bytes32 role, address account) returns()
+func (_TrainersIdle *TrainersIdleSession) RenounceRole(role [32]byte, account common.Address) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.RenounceRole(&_TrainersIdle.TransactOpts, role, account)
+}
+
+// RenounceRole is a paid mutator transaction binding the contract method 0x36568abe.
+//
+// Solidity: function renounceRole(bytes32 role, address account) returns()
+func (_TrainersIdle *TrainersIdleTransactorSession) RenounceRole(role [32]byte, account common.Address) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.RenounceRole(&_TrainersIdle.TransactOpts, role, account)
+}
+
+// RevokeRole is a paid mutator transaction binding the contract method 0xd547741f.
+//
+// Solidity: function revokeRole(bytes32 role, address account) returns()
+func (_TrainersIdle *TrainersIdleTransactor) RevokeRole(opts *bind.TransactOpts, role [32]byte, account common.Address) (*types.Transaction, error) {
+	return _TrainersIdle.contract.Transact(opts, "revokeRole", role, account)
+}
+
+// RevokeRole is a paid mutator transaction binding the contract method 0xd547741f.
+//
+// Solidity: function revokeRole(bytes32 role, address account) returns()
+func (_TrainersIdle *TrainersIdleSession) RevokeRole(role [32]byte, account common.Address) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.RevokeRole(&_TrainersIdle.TransactOpts, role, account)
+}
+
+// RevokeRole is a paid mutator transaction binding the contract method 0xd547741f.
+//
+// Solidity: function revokeRole(bytes32 role, address account) returns()
+func (_TrainersIdle *TrainersIdleTransactorSession) RevokeRole(role [32]byte, account common.Address) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.RevokeRole(&_TrainersIdle.TransactOpts, role, account)
+}
+
+// SendFeesToExecutor is a paid mutator transaction binding the contract method 0x93710421.
+//
+// Solidity: function sendFeesToExecutor() returns()
+func (_TrainersIdle *TrainersIdleTransactor) SendFeesToExecutor(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _TrainersIdle.contract.Transact(opts, "sendFeesToExecutor")
+}
+
+// SendFeesToExecutor is a paid mutator transaction binding the contract method 0x93710421.
+//
+// Solidity: function sendFeesToExecutor() returns()
+func (_TrainersIdle *TrainersIdleSession) SendFeesToExecutor() (*types.Transaction, error) {
+	return _TrainersIdle.Contract.SendFeesToExecutor(&_TrainersIdle.TransactOpts)
+}
+
+// SendFeesToExecutor is a paid mutator transaction binding the contract method 0x93710421.
+//
+// Solidity: function sendFeesToExecutor() returns()
+func (_TrainersIdle *TrainersIdleTransactorSession) SendFeesToExecutor() (*types.Transaction, error) {
+	return _TrainersIdle.Contract.SendFeesToExecutor(&_TrainersIdle.TransactOpts)
+}
+
+// SetExecutor is a paid mutator transaction binding the contract method 0x1c3c0ea8.
+//
+// Solidity: function setExecutor(address _e) returns()
+func (_TrainersIdle *TrainersIdleTransactor) SetExecutor(opts *bind.TransactOpts, _e common.Address) (*types.Transaction, error) {
+	return _TrainersIdle.contract.Transact(opts, "setExecutor", _e)
+}
+
+// SetExecutor is a paid mutator transaction binding the contract method 0x1c3c0ea8.
+//
+// Solidity: function setExecutor(address _e) returns()
+func (_TrainersIdle *TrainersIdleSession) SetExecutor(_e common.Address) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.SetExecutor(&_TrainersIdle.TransactOpts, _e)
+}
+
+// SetExecutor is a paid mutator transaction binding the contract method 0x1c3c0ea8.
+//
+// Solidity: function setExecutor(address _e) returns()
+func (_TrainersIdle *TrainersIdleTransactorSession) SetExecutor(_e common.Address) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.SetExecutor(&_TrainersIdle.TransactOpts, _e)
+}
+
+// SetMTRFee is a paid mutator transaction binding the contract method 0x0f1a4273.
+//
+// Solidity: function setMTRFee(uint256 _fee) returns()
+func (_TrainersIdle *TrainersIdleTransactor) SetMTRFee(opts *bind.TransactOpts, _fee *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.contract.Transact(opts, "setMTRFee", _fee)
+}
+
+// SetMTRFee is a paid mutator transaction binding the contract method 0x0f1a4273.
+//
+// Solidity: function setMTRFee(uint256 _fee) returns()
+func (_TrainersIdle *TrainersIdleSession) SetMTRFee(_fee *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.SetMTRFee(&_TrainersIdle.TransactOpts, _fee)
+}
+
+// SetMTRFee is a paid mutator transaction binding the contract method 0x0f1a4273.
+//
+// Solidity: function setMTRFee(uint256 _fee) returns()
+func (_TrainersIdle *TrainersIdleTransactorSession) SetMTRFee(_fee *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.SetMTRFee(&_TrainersIdle.TransactOpts, _fee)
+}
+
+// SetMaxWinners is a paid mutator transaction binding the contract method 0xd17b18c4.
+//
+// Solidity: function setMaxWinners(uint256 _i) returns()
+func (_TrainersIdle *TrainersIdleTransactor) SetMaxWinners(opts *bind.TransactOpts, _i *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.contract.Transact(opts, "setMaxWinners", _i)
+}
+
+// SetMaxWinners is a paid mutator transaction binding the contract method 0xd17b18c4.
+//
+// Solidity: function setMaxWinners(uint256 _i) returns()
+func (_TrainersIdle *TrainersIdleSession) SetMaxWinners(_i *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.SetMaxWinners(&_TrainersIdle.TransactOpts, _i)
+}
+
+// SetMaxWinners is a paid mutator transaction binding the contract method 0xd17b18c4.
+//
+// Solidity: function setMaxWinners(uint256 _i) returns()
+func (_TrainersIdle *TrainersIdleTransactorSession) SetMaxWinners(_i *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.SetMaxWinners(&_TrainersIdle.TransactOpts, _i)
+}
+
+// SetPPerBlock is a paid mutator transaction binding the contract method 0xbc3a274b.
+//
+// Solidity: function setPPerBlock(uint256 _v) returns()
+func (_TrainersIdle *TrainersIdleTransactor) SetPPerBlock(opts *bind.TransactOpts, _v *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.contract.Transact(opts, "setPPerBlock", _v)
+}
+
+// SetPPerBlock is a paid mutator transaction binding the contract method 0xbc3a274b.
+//
+// Solidity: function setPPerBlock(uint256 _v) returns()
+func (_TrainersIdle *TrainersIdleSession) SetPPerBlock(_v *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.SetPPerBlock(&_TrainersIdle.TransactOpts, _v)
+}
+
+// SetPPerBlock is a paid mutator transaction binding the contract method 0xbc3a274b.
+//
+// Solidity: function setPPerBlock(uint256 _v) returns()
+func (_TrainersIdle *TrainersIdleTransactorSession) SetPPerBlock(_v *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.SetPPerBlock(&_TrainersIdle.TransactOpts, _v)
+}
+
+// SetPPerTrans is a paid mutator transaction binding the contract method 0xe6bcf406.
+//
+// Solidity: function setPPerTrans(uint256 _v) returns()
+func (_TrainersIdle *TrainersIdleTransactor) SetPPerTrans(opts *bind.TransactOpts, _v *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.contract.Transact(opts, "setPPerTrans", _v)
+}
+
+// SetPPerTrans is a paid mutator transaction binding the contract method 0xe6bcf406.
+//
+// Solidity: function setPPerTrans(uint256 _v) returns()
+func (_TrainersIdle *TrainersIdleSession) SetPPerTrans(_v *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.SetPPerTrans(&_TrainersIdle.TransactOpts, _v)
+}
+
+// SetPPerTrans is a paid mutator transaction binding the contract method 0xe6bcf406.
+//
+// Solidity: function setPPerTrans(uint256 _v) returns()
+func (_TrainersIdle *TrainersIdleTransactorSession) SetPPerTrans(_v *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.SetPPerTrans(&_TrainersIdle.TransactOpts, _v)
+}
+
+// SetPPercentage is a paid mutator transaction binding the contract method 0xd967895e.
+//
+// Solidity: function setPPercentage(uint8 _p) returns()
+func (_TrainersIdle *TrainersIdleTransactor) SetPPercentage(opts *bind.TransactOpts, _p uint8) (*types.Transaction, error) {
+	return _TrainersIdle.contract.Transact(opts, "setPPercentage", _p)
+}
+
+// SetPPercentage is a paid mutator transaction binding the contract method 0xd967895e.
+//
+// Solidity: function setPPercentage(uint8 _p) returns()
+func (_TrainersIdle *TrainersIdleSession) SetPPercentage(_p uint8) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.SetPPercentage(&_TrainersIdle.TransactOpts, _p)
+}
+
+// SetPPercentage is a paid mutator transaction binding the contract method 0xd967895e.
+//
+// Solidity: function setPPercentage(uint8 _p) returns()
+func (_TrainersIdle *TrainersIdleTransactorSession) SetPPercentage(_p uint8) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.SetPPercentage(&_TrainersIdle.TransactOpts, _p)
+}
+
+// SetRewardsP is a paid mutator transaction binding the contract method 0x9bb0b7a3.
+//
+// Solidity: function setRewardsP(uint256 _i, uint8 _p) returns()
+func (_TrainersIdle *TrainersIdleTransactor) SetRewardsP(opts *bind.TransactOpts, _i *big.Int, _p uint8) (*types.Transaction, error) {
+	return _TrainersIdle.contract.Transact(opts, "setRewardsP", _i, _p)
+}
+
+// SetRewardsP is a paid mutator transaction binding the contract method 0x9bb0b7a3.
+//
+// Solidity: function setRewardsP(uint256 _i, uint8 _p) returns()
+func (_TrainersIdle *TrainersIdleSession) SetRewardsP(_i *big.Int, _p uint8) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.SetRewardsP(&_TrainersIdle.TransactOpts, _i, _p)
+}
+
+// SetRewardsP is a paid mutator transaction binding the contract method 0x9bb0b7a3.
+//
+// Solidity: function setRewardsP(uint256 _i, uint8 _p) returns()
+func (_TrainersIdle *TrainersIdleTransactorSession) SetRewardsP(_i *big.Int, _p uint8) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.SetRewardsP(&_TrainersIdle.TransactOpts, _i, _p)
+}
+
+// SetTrainerImprovementValue is a paid mutator transaction binding the contract method 0xea130820.
+//
+// Solidity: function setTrainerImprovementValue(uint256 _i, uint256 _value, uint256 _mult) returns()
+func (_TrainersIdle *TrainersIdleTransactor) SetTrainerImprovementValue(opts *bind.TransactOpts, _i *big.Int, _value *big.Int, _mult *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.contract.Transact(opts, "setTrainerImprovementValue", _i, _value, _mult)
+}
+
+// SetTrainerImprovementValue is a paid mutator transaction binding the contract method 0xea130820.
+//
+// Solidity: function setTrainerImprovementValue(uint256 _i, uint256 _value, uint256 _mult) returns()
+func (_TrainersIdle *TrainersIdleSession) SetTrainerImprovementValue(_i *big.Int, _value *big.Int, _mult *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.SetTrainerImprovementValue(&_TrainersIdle.TransactOpts, _i, _value, _mult)
+}
+
+// SetTrainerImprovementValue is a paid mutator transaction binding the contract method 0xea130820.
+//
+// Solidity: function setTrainerImprovementValue(uint256 _i, uint256 _value, uint256 _mult) returns()
+func (_TrainersIdle *TrainersIdleTransactorSession) SetTrainerImprovementValue(_i *big.Int, _value *big.Int, _mult *big.Int) (*types.Transaction, error) {
+	return _TrainersIdle.Contract.SetTrainerImprovementValue(&_TrainersIdle.TransactOpts, _i, _value, _mult)
+}
+
+// TrainersIdleBuyImprovementIterator is returned from FilterBuyImprovement and is used to iterate over the raw logs and unpacked data for BuyImprovement events raised by the TrainersIdle contract.
+type TrainersIdleBuyImprovementIterator struct {
+	Event *TrainersIdleBuyImprovement // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *TrainersIdleBuyImprovementIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(TrainersIdleBuyImprovement)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(TrainersIdleBuyImprovement)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *TrainersIdleBuyImprovementIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *TrainersIdleBuyImprovementIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// TrainersIdleBuyImprovement represents a BuyImprovement event raised by the TrainersIdle contract.
+type TrainersIdleBuyImprovement struct {
+	Arg0 *big.Int
+	Arg1 *big.Int
+	Raw  types.Log // Blockchain specific contextual infos
+}
+
+// FilterBuyImprovement is a free log retrieval operation binding the contract event 0x5999410022ec50d1ffde644471d13ab5b5482616c8bfc6696d13aa0577c5840c.
+//
+// Solidity: event BuyImprovement(uint256 arg0, uint256 arg1)
+func (_TrainersIdle *TrainersIdleFilterer) FilterBuyImprovement(opts *bind.FilterOpts) (*TrainersIdleBuyImprovementIterator, error) {
+
+	logs, sub, err := _TrainersIdle.contract.FilterLogs(opts, "BuyImprovement")
+	if err != nil {
+		return nil, err
+	}
+	return &TrainersIdleBuyImprovementIterator{contract: _TrainersIdle.contract, event: "BuyImprovement", logs: logs, sub: sub}, nil
+}
+
+// WatchBuyImprovement is a free log subscription operation binding the contract event 0x5999410022ec50d1ffde644471d13ab5b5482616c8bfc6696d13aa0577c5840c.
+//
+// Solidity: event BuyImprovement(uint256 arg0, uint256 arg1)
+func (_TrainersIdle *TrainersIdleFilterer) WatchBuyImprovement(opts *bind.WatchOpts, sink chan<- *TrainersIdleBuyImprovement) (event.Subscription, error) {
+
+	logs, sub, err := _TrainersIdle.contract.WatchLogs(opts, "BuyImprovement")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(TrainersIdleBuyImprovement)
+				if err := _TrainersIdle.contract.UnpackLog(event, "BuyImprovement", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseBuyImprovement is a log parse operation binding the contract event 0x5999410022ec50d1ffde644471d13ab5b5482616c8bfc6696d13aa0577c5840c.
+//
+// Solidity: event BuyImprovement(uint256 arg0, uint256 arg1)
+func (_TrainersIdle *TrainersIdleFilterer) ParseBuyImprovement(log types.Log) (*TrainersIdleBuyImprovement, error) {
+	event := new(TrainersIdleBuyImprovement)
+	if err := _TrainersIdle.contract.UnpackLog(event, "BuyImprovement", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// TrainersIdleCollectIDLEPointsIterator is returned from FilterCollectIDLEPoints and is used to iterate over the raw logs and unpacked data for CollectIDLEPoints events raised by the TrainersIdle contract.
+type TrainersIdleCollectIDLEPointsIterator struct {
+	Event *TrainersIdleCollectIDLEPoints // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *TrainersIdleCollectIDLEPointsIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(TrainersIdleCollectIDLEPoints)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(TrainersIdleCollectIDLEPoints)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *TrainersIdleCollectIDLEPointsIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *TrainersIdleCollectIDLEPointsIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// TrainersIdleCollectIDLEPoints represents a CollectIDLEPoints event raised by the TrainersIdle contract.
+type TrainersIdleCollectIDLEPoints struct {
+	Arg0 *big.Int
+	Arg1 *big.Int
+	Raw  types.Log // Blockchain specific contextual infos
+}
+
+// FilterCollectIDLEPoints is a free log retrieval operation binding the contract event 0xc9cd65a70e4e2a217623cf87df32706764a2f447cb55b016b28e0c643e681ae2.
+//
+// Solidity: event CollectIDLEPoints(uint256 arg0, uint256 arg1)
+func (_TrainersIdle *TrainersIdleFilterer) FilterCollectIDLEPoints(opts *bind.FilterOpts) (*TrainersIdleCollectIDLEPointsIterator, error) {
+
+	logs, sub, err := _TrainersIdle.contract.FilterLogs(opts, "CollectIDLEPoints")
+	if err != nil {
+		return nil, err
+	}
+	return &TrainersIdleCollectIDLEPointsIterator{contract: _TrainersIdle.contract, event: "CollectIDLEPoints", logs: logs, sub: sub}, nil
+}
+
+// WatchCollectIDLEPoints is a free log subscription operation binding the contract event 0xc9cd65a70e4e2a217623cf87df32706764a2f447cb55b016b28e0c643e681ae2.
+//
+// Solidity: event CollectIDLEPoints(uint256 arg0, uint256 arg1)
+func (_TrainersIdle *TrainersIdleFilterer) WatchCollectIDLEPoints(opts *bind.WatchOpts, sink chan<- *TrainersIdleCollectIDLEPoints) (event.Subscription, error) {
+
+	logs, sub, err := _TrainersIdle.contract.WatchLogs(opts, "CollectIDLEPoints")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(TrainersIdleCollectIDLEPoints)
+				if err := _TrainersIdle.contract.UnpackLog(event, "CollectIDLEPoints", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseCollectIDLEPoints is a log parse operation binding the contract event 0xc9cd65a70e4e2a217623cf87df32706764a2f447cb55b016b28e0c643e681ae2.
+//
+// Solidity: event CollectIDLEPoints(uint256 arg0, uint256 arg1)
+func (_TrainersIdle *TrainersIdleFilterer) ParseCollectIDLEPoints(log types.Log) (*TrainersIdleCollectIDLEPoints, error) {
+	event := new(TrainersIdleCollectIDLEPoints)
+	if err := _TrainersIdle.contract.UnpackLog(event, "CollectIDLEPoints", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// TrainersIdleCollectTransactionPointsIterator is returned from FilterCollectTransactionPoints and is used to iterate over the raw logs and unpacked data for CollectTransactionPoints events raised by the TrainersIdle contract.
+type TrainersIdleCollectTransactionPointsIterator struct {
+	Event *TrainersIdleCollectTransactionPoints // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *TrainersIdleCollectTransactionPointsIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(TrainersIdleCollectTransactionPoints)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(TrainersIdleCollectTransactionPoints)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *TrainersIdleCollectTransactionPointsIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *TrainersIdleCollectTransactionPointsIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// TrainersIdleCollectTransactionPoints represents a CollectTransactionPoints event raised by the TrainersIdle contract.
+type TrainersIdleCollectTransactionPoints struct {
+	Arg0 *big.Int
+	Arg1 *big.Int
+	Raw  types.Log // Blockchain specific contextual infos
+}
+
+// FilterCollectTransactionPoints is a free log retrieval operation binding the contract event 0xb367f7a60fbab705463ff086be4fc59c2be65ec753e1c52ac8af6f1198c522c0.
+//
+// Solidity: event CollectTransactionPoints(uint256 arg0, uint256 arg1)
+func (_TrainersIdle *TrainersIdleFilterer) FilterCollectTransactionPoints(opts *bind.FilterOpts) (*TrainersIdleCollectTransactionPointsIterator, error) {
+
+	logs, sub, err := _TrainersIdle.contract.FilterLogs(opts, "CollectTransactionPoints")
+	if err != nil {
+		return nil, err
+	}
+	return &TrainersIdleCollectTransactionPointsIterator{contract: _TrainersIdle.contract, event: "CollectTransactionPoints", logs: logs, sub: sub}, nil
+}
+
+// WatchCollectTransactionPoints is a free log subscription operation binding the contract event 0xb367f7a60fbab705463ff086be4fc59c2be65ec753e1c52ac8af6f1198c522c0.
+//
+// Solidity: event CollectTransactionPoints(uint256 arg0, uint256 arg1)
+func (_TrainersIdle *TrainersIdleFilterer) WatchCollectTransactionPoints(opts *bind.WatchOpts, sink chan<- *TrainersIdleCollectTransactionPoints) (event.Subscription, error) {
+
+	logs, sub, err := _TrainersIdle.contract.WatchLogs(opts, "CollectTransactionPoints")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(TrainersIdleCollectTransactionPoints)
+				if err := _TrainersIdle.contract.UnpackLog(event, "CollectTransactionPoints", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseCollectTransactionPoints is a log parse operation binding the contract event 0xb367f7a60fbab705463ff086be4fc59c2be65ec753e1c52ac8af6f1198c522c0.
+//
+// Solidity: event CollectTransactionPoints(uint256 arg0, uint256 arg1)
+func (_TrainersIdle *TrainersIdleFilterer) ParseCollectTransactionPoints(log types.Log) (*TrainersIdleCollectTransactionPoints, error) {
+	event := new(TrainersIdleCollectTransactionPoints)
+	if err := _TrainersIdle.contract.UnpackLog(event, "CollectTransactionPoints", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// TrainersIdleInjectFeeBalanceIterator is returned from FilterInjectFeeBalance and is used to iterate over the raw logs and unpacked data for InjectFeeBalance events raised by the TrainersIdle contract.
+type TrainersIdleInjectFeeBalanceIterator struct {
+	Event *TrainersIdleInjectFeeBalance // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *TrainersIdleInjectFeeBalanceIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(TrainersIdleInjectFeeBalance)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(TrainersIdleInjectFeeBalance)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *TrainersIdleInjectFeeBalanceIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *TrainersIdleInjectFeeBalanceIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// TrainersIdleInjectFeeBalance represents a InjectFeeBalance event raised by the TrainersIdle contract.
+type TrainersIdleInjectFeeBalance struct {
+	Arg0 common.Address
+	Arg1 *big.Int
+	Arg2 *big.Int
+	Raw  types.Log // Blockchain specific contextual infos
+}
+
+// FilterInjectFeeBalance is a free log retrieval operation binding the contract event 0x9e9b7e29099f2d6721d8268a517ee7ada50ae5d99eab1c668a3ba067877023fb.
+//
+// Solidity: event InjectFeeBalance(address arg0, uint256 arg1, uint256 arg2)
+func (_TrainersIdle *TrainersIdleFilterer) FilterInjectFeeBalance(opts *bind.FilterOpts) (*TrainersIdleInjectFeeBalanceIterator, error) {
+
+	logs, sub, err := _TrainersIdle.contract.FilterLogs(opts, "InjectFeeBalance")
+	if err != nil {
+		return nil, err
+	}
+	return &TrainersIdleInjectFeeBalanceIterator{contract: _TrainersIdle.contract, event: "InjectFeeBalance", logs: logs, sub: sub}, nil
+}
+
+// WatchInjectFeeBalance is a free log subscription operation binding the contract event 0x9e9b7e29099f2d6721d8268a517ee7ada50ae5d99eab1c668a3ba067877023fb.
+//
+// Solidity: event InjectFeeBalance(address arg0, uint256 arg1, uint256 arg2)
+func (_TrainersIdle *TrainersIdleFilterer) WatchInjectFeeBalance(opts *bind.WatchOpts, sink chan<- *TrainersIdleInjectFeeBalance) (event.Subscription, error) {
+
+	logs, sub, err := _TrainersIdle.contract.WatchLogs(opts, "InjectFeeBalance")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(TrainersIdleInjectFeeBalance)
+				if err := _TrainersIdle.contract.UnpackLog(event, "InjectFeeBalance", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseInjectFeeBalance is a log parse operation binding the contract event 0x9e9b7e29099f2d6721d8268a517ee7ada50ae5d99eab1c668a3ba067877023fb.
+//
+// Solidity: event InjectFeeBalance(address arg0, uint256 arg1, uint256 arg2)
+func (_TrainersIdle *TrainersIdleFilterer) ParseInjectFeeBalance(log types.Log) (*TrainersIdleInjectFeeBalance, error) {
+	event := new(TrainersIdleInjectFeeBalance)
+	if err := _TrainersIdle.contract.UnpackLog(event, "InjectFeeBalance", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// TrainersIdleJoinIterator is returned from FilterJoin and is used to iterate over the raw logs and unpacked data for Join events raised by the TrainersIdle contract.
+type TrainersIdleJoinIterator struct {
+	Event *TrainersIdleJoin // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *TrainersIdleJoinIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(TrainersIdleJoin)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(TrainersIdleJoin)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *TrainersIdleJoinIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *TrainersIdleJoinIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// TrainersIdleJoin represents a Join event raised by the TrainersIdle contract.
+type TrainersIdleJoin struct {
+	Arg0 *big.Int
+	Arg1 *big.Int
+	Raw  types.Log // Blockchain specific contextual infos
+}
+
+// FilterJoin is a free log retrieval operation binding the contract event 0x735ef78aed2bd4cfae4d08680b7cb333d4aa561d0287a81d4abbac0b4b64d589.
+//
+// Solidity: event Join(uint256 arg0, uint256 arg1)
+func (_TrainersIdle *TrainersIdleFilterer) FilterJoin(opts *bind.FilterOpts) (*TrainersIdleJoinIterator, error) {
+
+	logs, sub, err := _TrainersIdle.contract.FilterLogs(opts, "Join")
+	if err != nil {
+		return nil, err
+	}
+	return &TrainersIdleJoinIterator{contract: _TrainersIdle.contract, event: "Join", logs: logs, sub: sub}, nil
+}
+
+// WatchJoin is a free log subscription operation binding the contract event 0x735ef78aed2bd4cfae4d08680b7cb333d4aa561d0287a81d4abbac0b4b64d589.
+//
+// Solidity: event Join(uint256 arg0, uint256 arg1)
+func (_TrainersIdle *TrainersIdleFilterer) WatchJoin(opts *bind.WatchOpts, sink chan<- *TrainersIdleJoin) (event.Subscription, error) {
+
+	logs, sub, err := _TrainersIdle.contract.WatchLogs(opts, "Join")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(TrainersIdleJoin)
+				if err := _TrainersIdle.contract.UnpackLog(event, "Join", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseJoin is a log parse operation binding the contract event 0x735ef78aed2bd4cfae4d08680b7cb333d4aa561d0287a81d4abbac0b4b64d589.
+//
+// Solidity: event Join(uint256 arg0, uint256 arg1)
+func (_TrainersIdle *TrainersIdleFilterer) ParseJoin(log types.Log) (*TrainersIdleJoin, error) {
+	event := new(TrainersIdleJoin)
+	if err := _TrainersIdle.contract.UnpackLog(event, "Join", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// TrainersIdleRoleAdminChangedIterator is returned from FilterRoleAdminChanged and is used to iterate over the raw logs and unpacked data for RoleAdminChanged events raised by the TrainersIdle contract.
+type TrainersIdleRoleAdminChangedIterator struct {
+	Event *TrainersIdleRoleAdminChanged // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *TrainersIdleRoleAdminChangedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(TrainersIdleRoleAdminChanged)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(TrainersIdleRoleAdminChanged)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *TrainersIdleRoleAdminChangedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *TrainersIdleRoleAdminChangedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// TrainersIdleRoleAdminChanged represents a RoleAdminChanged event raised by the TrainersIdle contract.
+type TrainersIdleRoleAdminChanged struct {
+	Role              [32]byte
+	PreviousAdminRole [32]byte
+	NewAdminRole      [32]byte
+	Raw               types.Log // Blockchain specific contextual infos
+}
+
+// FilterRoleAdminChanged is a free log retrieval operation binding the contract event 0xbd79b86ffe0ab8e8776151514217cd7cacd52c909f66475c3af44e129f0b00ff.
+//
+// Solidity: event RoleAdminChanged(bytes32 indexed role, bytes32 indexed previousAdminRole, bytes32 indexed newAdminRole)
+func (_TrainersIdle *TrainersIdleFilterer) FilterRoleAdminChanged(opts *bind.FilterOpts, role [][32]byte, previousAdminRole [][32]byte, newAdminRole [][32]byte) (*TrainersIdleRoleAdminChangedIterator, error) {
+
+	var roleRule []interface{}
+	for _, roleItem := range role {
+		roleRule = append(roleRule, roleItem)
+	}
+	var previousAdminRoleRule []interface{}
+	for _, previousAdminRoleItem := range previousAdminRole {
+		previousAdminRoleRule = append(previousAdminRoleRule, previousAdminRoleItem)
+	}
+	var newAdminRoleRule []interface{}
+	for _, newAdminRoleItem := range newAdminRole {
+		newAdminRoleRule = append(newAdminRoleRule, newAdminRoleItem)
+	}
+
+	logs, sub, err := _TrainersIdle.contract.FilterLogs(opts, "RoleAdminChanged", roleRule, previousAdminRoleRule, newAdminRoleRule)
+	if err != nil {
+		return nil, err
+	}
+	return &TrainersIdleRoleAdminChangedIterator{contract: _TrainersIdle.contract, event: "RoleAdminChanged", logs: logs, sub: sub}, nil
+}
+
+// WatchRoleAdminChanged is a free log subscription operation binding the contract event 0xbd79b86ffe0ab8e8776151514217cd7cacd52c909f66475c3af44e129f0b00ff.
+//
+// Solidity: event RoleAdminChanged(bytes32 indexed role, bytes32 indexed previousAdminRole, bytes32 indexed newAdminRole)
+func (_TrainersIdle *TrainersIdleFilterer) WatchRoleAdminChanged(opts *bind.WatchOpts, sink chan<- *TrainersIdleRoleAdminChanged, role [][32]byte, previousAdminRole [][32]byte, newAdminRole [][32]byte) (event.Subscription, error) {
+
+	var roleRule []interface{}
+	for _, roleItem := range role {
+		roleRule = append(roleRule, roleItem)
+	}
+	var previousAdminRoleRule []interface{}
+	for _, previousAdminRoleItem := range previousAdminRole {
+		previousAdminRoleRule = append(previousAdminRoleRule, previousAdminRoleItem)
+	}
+	var newAdminRoleRule []interface{}
+	for _, newAdminRoleItem := range newAdminRole {
+		newAdminRoleRule = append(newAdminRoleRule, newAdminRoleItem)
+	}
+
+	logs, sub, err := _TrainersIdle.contract.WatchLogs(opts, "RoleAdminChanged", roleRule, previousAdminRoleRule, newAdminRoleRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(TrainersIdleRoleAdminChanged)
+				if err := _TrainersIdle.contract.UnpackLog(event, "RoleAdminChanged", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseRoleAdminChanged is a log parse operation binding the contract event 0xbd79b86ffe0ab8e8776151514217cd7cacd52c909f66475c3af44e129f0b00ff.
+//
+// Solidity: event RoleAdminChanged(bytes32 indexed role, bytes32 indexed previousAdminRole, bytes32 indexed newAdminRole)
+func (_TrainersIdle *TrainersIdleFilterer) ParseRoleAdminChanged(log types.Log) (*TrainersIdleRoleAdminChanged, error) {
+	event := new(TrainersIdleRoleAdminChanged)
+	if err := _TrainersIdle.contract.UnpackLog(event, "RoleAdminChanged", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// TrainersIdleRoleGrantedIterator is returned from FilterRoleGranted and is used to iterate over the raw logs and unpacked data for RoleGranted events raised by the TrainersIdle contract.
+type TrainersIdleRoleGrantedIterator struct {
+	Event *TrainersIdleRoleGranted // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *TrainersIdleRoleGrantedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(TrainersIdleRoleGranted)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(TrainersIdleRoleGranted)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *TrainersIdleRoleGrantedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *TrainersIdleRoleGrantedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// TrainersIdleRoleGranted represents a RoleGranted event raised by the TrainersIdle contract.
+type TrainersIdleRoleGranted struct {
+	Role    [32]byte
+	Account common.Address
+	Sender  common.Address
+	Raw     types.Log // Blockchain specific contextual infos
+}
+
+// FilterRoleGranted is a free log retrieval operation binding the contract event 0x2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d.
+//
+// Solidity: event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender)
+func (_TrainersIdle *TrainersIdleFilterer) FilterRoleGranted(opts *bind.FilterOpts, role [][32]byte, account []common.Address, sender []common.Address) (*TrainersIdleRoleGrantedIterator, error) {
+
+	var roleRule []interface{}
+	for _, roleItem := range role {
+		roleRule = append(roleRule, roleItem)
+	}
+	var accountRule []interface{}
+	for _, accountItem := range account {
+		accountRule = append(accountRule, accountItem)
+	}
+	var senderRule []interface{}
+	for _, senderItem := range sender {
+		senderRule = append(senderRule, senderItem)
+	}
+
+	logs, sub, err := _TrainersIdle.contract.FilterLogs(opts, "RoleGranted", roleRule, accountRule, senderRule)
+	if err != nil {
+		return nil, err
+	}
+	return &TrainersIdleRoleGrantedIterator{contract: _TrainersIdle.contract, event: "RoleGranted", logs: logs, sub: sub}, nil
+}
+
+// WatchRoleGranted is a free log subscription operation binding the contract event 0x2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d.
+//
+// Solidity: event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender)
+func (_TrainersIdle *TrainersIdleFilterer) WatchRoleGranted(opts *bind.WatchOpts, sink chan<- *TrainersIdleRoleGranted, role [][32]byte, account []common.Address, sender []common.Address) (event.Subscription, error) {
+
+	var roleRule []interface{}
+	for _, roleItem := range role {
+		roleRule = append(roleRule, roleItem)
+	}
+	var accountRule []interface{}
+	for _, accountItem := range account {
+		accountRule = append(accountRule, accountItem)
+	}
+	var senderRule []interface{}
+	for _, senderItem := range sender {
+		senderRule = append(senderRule, senderItem)
+	}
+
+	logs, sub, err := _TrainersIdle.contract.WatchLogs(opts, "RoleGranted", roleRule, accountRule, senderRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(TrainersIdleRoleGranted)
+				if err := _TrainersIdle.contract.UnpackLog(event, "RoleGranted", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseRoleGranted is a log parse operation binding the contract event 0x2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d.
+//
+// Solidity: event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender)
+func (_TrainersIdle *TrainersIdleFilterer) ParseRoleGranted(log types.Log) (*TrainersIdleRoleGranted, error) {
+	event := new(TrainersIdleRoleGranted)
+	if err := _TrainersIdle.contract.UnpackLog(event, "RoleGranted", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// TrainersIdleRoleRevokedIterator is returned from FilterRoleRevoked and is used to iterate over the raw logs and unpacked data for RoleRevoked events raised by the TrainersIdle contract.
+type TrainersIdleRoleRevokedIterator struct {
+	Event *TrainersIdleRoleRevoked // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *TrainersIdleRoleRevokedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(TrainersIdleRoleRevoked)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(TrainersIdleRoleRevoked)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *TrainersIdleRoleRevokedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *TrainersIdleRoleRevokedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// TrainersIdleRoleRevoked represents a RoleRevoked event raised by the TrainersIdle contract.
+type TrainersIdleRoleRevoked struct {
+	Role    [32]byte
+	Account common.Address
+	Sender  common.Address
+	Raw     types.Log // Blockchain specific contextual infos
+}
+
+// FilterRoleRevoked is a free log retrieval operation binding the contract event 0xf6391f5c32d9c69d2a47ea670b442974b53935d1edc7fd64eb21e047a839171b.
+//
+// Solidity: event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender)
+func (_TrainersIdle *TrainersIdleFilterer) FilterRoleRevoked(opts *bind.FilterOpts, role [][32]byte, account []common.Address, sender []common.Address) (*TrainersIdleRoleRevokedIterator, error) {
+
+	var roleRule []interface{}
+	for _, roleItem := range role {
+		roleRule = append(roleRule, roleItem)
+	}
+	var accountRule []interface{}
+	for _, accountItem := range account {
+		accountRule = append(accountRule, accountItem)
+	}
+	var senderRule []interface{}
+	for _, senderItem := range sender {
+		senderRule = append(senderRule, senderItem)
+	}
+
+	logs, sub, err := _TrainersIdle.contract.FilterLogs(opts, "RoleRevoked", roleRule, accountRule, senderRule)
+	if err != nil {
+		return nil, err
+	}
+	return &TrainersIdleRoleRevokedIterator{contract: _TrainersIdle.contract, event: "RoleRevoked", logs: logs, sub: sub}, nil
+}
+
+// WatchRoleRevoked is a free log subscription operation binding the contract event 0xf6391f5c32d9c69d2a47ea670b442974b53935d1edc7fd64eb21e047a839171b.
+//
+// Solidity: event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender)
+func (_TrainersIdle *TrainersIdleFilterer) WatchRoleRevoked(opts *bind.WatchOpts, sink chan<- *TrainersIdleRoleRevoked, role [][32]byte, account []common.Address, sender []common.Address) (event.Subscription, error) {
+
+	var roleRule []interface{}
+	for _, roleItem := range role {
+		roleRule = append(roleRule, roleItem)
+	}
+	var accountRule []interface{}
+	for _, accountItem := range account {
+		accountRule = append(accountRule, accountItem)
+	}
+	var senderRule []interface{}
+	for _, senderItem := range sender {
+		senderRule = append(senderRule, senderItem)
+	}
+
+	logs, sub, err := _TrainersIdle.contract.WatchLogs(opts, "RoleRevoked", roleRule, accountRule, senderRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(TrainersIdleRoleRevoked)
+				if err := _TrainersIdle.contract.UnpackLog(event, "RoleRevoked", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseRoleRevoked is a log parse operation binding the contract event 0xf6391f5c32d9c69d2a47ea670b442974b53935d1edc7fd64eb21e047a839171b.
+//
+// Solidity: event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender)
+func (_TrainersIdle *TrainersIdleFilterer) ParseRoleRevoked(log types.Log) (*TrainersIdleRoleRevoked, error) {
+	event := new(TrainersIdleRoleRevoked)
+	if err := _TrainersIdle.contract.UnpackLog(event, "RoleRevoked", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
