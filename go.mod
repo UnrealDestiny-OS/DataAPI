@@ -3,17 +3,19 @@ module unrealDestiny/dataAPI
 go 1.21.6
 
 require (
+	github.com/beeker1121/goque v2.1.0+incompatible
 	github.com/ethereum/go-ethereum v1.12.2
 	github.com/gin-gonic/gin v1.9.1
 	github.com/joho/godotenv v1.5.1
+	github.com/shopspring/decimal v1.3.1
 	github.com/storyicon/sigverify v1.1.0
 	go.mongodb.org/mongo-driver v1.14.0
 	go.uber.org/zap v1.26.0
+	golang.org/x/crypto v0.19.0
 )
 
 require (
 	github.com/StackExchange/wmi v1.2.1 // indirect
-	github.com/beeker1121/goque v2.1.0+incompatible // indirect
 	github.com/bits-and-blooms/bitset v1.13.0 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.3.2 // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect
@@ -57,7 +59,6 @@ require (
 	github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.3.0 // indirect
-	golang.org/x/crypto v0.19.0 // indirect
 	golang.org/x/exp v0.0.0-20240213143201-ec583247a57a // indirect
 	golang.org/x/net v0.21.0 // indirect
 	golang.org/x/sync v0.6.0 // indirect

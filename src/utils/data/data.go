@@ -1,8 +1,11 @@
 package data
 
 import (
+	"math/big"
+
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/shopspring/decimal"
 )
 
 func ArrayContainsString(array []string, e string) bool {
@@ -34,4 +37,20 @@ func DecodeTxParams(abi abi.ABI, v map[string]interface{}, data []byte) (map[str
 		return map[string]interface{}{}, err
 	}
 	return v, nil
+}
+
+func ToDecimal(ivalue interface{}, decimals int) decimal.Decimal {
+	value := new(big.Int)
+	switch v := ivalue.(type) {
+	case string:
+		value.SetString(v, 10)
+	case *big.Int:
+		value = v
+	}
+
+	mul := decimal.NewFromFloat(float64(10)).Pow(decimal.NewFromFloat(float64(decimals)))
+	num, _ := decimal.NewFromString(value.String())
+	result := num.Div(mul)
+
+	return result
 }

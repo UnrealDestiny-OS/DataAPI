@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"math/big"
+	"strconv"
 
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi"
@@ -140,6 +141,14 @@ func GetCollectTransactionPointsSignature() []byte {
 	return methodID
 }
 
+func GetCollectIdlePointsSignature() []byte {
+	sign := []byte("collectIDLEPoints(address,uint256)")
+	hash := sha3.NewLegacyKeccak256()
+	hash.Write(sign)
+	methodID := hash.Sum(nil)[:4]
+	return methodID
+}
+
 func GetTrainerJoinTxData(userAddress string, trainer int) []byte {
 	var data []byte
 
@@ -168,6 +177,20 @@ func GetCollectTransactionPointsData(userAddress string, trainer int) []byte {
 	return data
 }
 
+func GetCollectionIdlePointsData(userAddress string, trainer int) []byte {
+	var data []byte
+
+	methodID := GetCollectIdlePointsSignature()
+	paddedAddress := ParseAddressForTxData(userAddress)
+	paddedAmount := ParseIntForTxData(trainer)
+
+	data = append(data, methodID...)
+	data = append(data, paddedAddress...)
+	data = append(data, paddedAmount...)
+
+	return data
+}
+
 func ParseAddressForTxData(address string) []byte {
 	return common.LeftPadBytes(common.HexToAddress(address).Bytes(), 32)
 }
@@ -176,4 +199,8 @@ func ParseIntForTxData(number int) []byte {
 	amount := new(big.Int)
 	amount.SetInt64(int64(number))
 	return common.LeftPadBytes(amount.Bytes(), 32)
+}
+
+func GenerateTransactionExecutionSign(wallet string, chain int) string {
+	return "Create transaction executor code with " + wallet + " on unrealdestiny.com using the chain " + strconv.Itoa(chain)
 }

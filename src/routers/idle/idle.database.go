@@ -30,10 +30,12 @@ type APIExecuteTrainerJoin struct {
 	Wallet     string `json:"wallet"`
 	Trainer    int    `json:"trainer"`
 	WalletAuth string `json:"walletAuth"`
+	Chain      int    `json:"chain"`
 }
 
 type APIExecuteCollectTransactionPoints struct {
 	Wallet     string `json:"wallet"`
 	Trainer    int    `json:"trainer"`
 	WalletAuth string `json:"walletAuth"`
+	Chain      int    `json:"chain"`
 }

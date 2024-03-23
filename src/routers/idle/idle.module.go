@@ -3,6 +3,7 @@ package idle
 import (
 	"context"
 	"crypto/ecdsa"
+	"errors"
 	"fmt"
 	"math/big"
 	"math/rand"
@@ -15,6 +16,7 @@ import (
 	"unrealDestiny/dataAPI/src/routers/users"
 	"unrealDestiny/dataAPI/src/utils/config"
 	"unrealDestiny/dataAPI/src/utils/contracts"
+	"unrealDestiny/dataAPI/src/utils/data"
 
 	"github.com/beeker1121/goque"
 	"github.com/ethereum/go-ethereum/accounts/abi"
@@ -24,6 +26,8 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gin-gonic/gin"
+	"github.com/shopspring/decimal"
+	"github.com/storyicon/sigverify"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -201,6 +205,50 @@ func (router *IdleRouter) finishTransaction(address common.Address) {
 	router.transactionWaitGroup.Done()
 }
 
+func (router *IdleRouter) validateWalletAuth(senderWallet string, creationChain int, sign string) error {
+	valid, err := sigverify.VerifyEllipticCurveHexSignatureEx(
+		common.HexToAddress(senderWallet),
+		[]byte(GenerateTransactionExecutionSign(senderWallet, creationChain)),
+		sign,
+	)
+
+	if err != nil {
+		return errors.New(IDLE_ERROR_VALIDATING_TX_SIGN)
+	}
+
+	if !valid {
+		return errors.New(IDLE_INVALID_SIGN)
+	}
+
+	return nil
+}
+
+func (router *IdleRouter) validateUserFee(senderWallet string) error {
+	profilesCollection := router.router.MainDatabase.Collection(users.COLLECTION_USER_PROFILES)
+
+	var result users.UserProfile
+	err := profilesCollection.FindOne(context.Background(), bson.M{"wallet": senderWallet}).Decode(&result)
+
+	if err != nil {
+		return errors.New(IDLE_ERROR_SEARCHING_USER_INFO)
+	}
+
+	wei := new(big.Int)
+	wei.SetString(result.FEE, 10)
+	userBalance := data.ToDecimal(wei, 18)
+	needBalance, err := decimal.NewFromString("0.05")
+
+	if err != nil {
+		return errors.New(IDLE_DECIMAL_FORMAT_PARSING_ERROR)
+	}
+
+	if userBalance.LessThan(needBalance) {
+		return errors.New(IDLE_NOT_ENOUGHT_FEE)
+	}
+
+	return nil
+}
+
 // SECTION - REST API
 // Rest API methods
 
@@ -214,31 +262,38 @@ func (router *IdleRouter) executeTrainerJoinRequest(c *gin.Context) {
 		return
 	}
 
-	contractAddress := common.HexToAddress(router.deployments.TrainersIDLE.Address)
-	trainerJoinTxData := GetTrainerJoinTxData(trainerJoin.Wallet, trainerJoin.Trainer)
-	txGenerationID := "tx-" + strconv.Itoa(int(time.Now().UnixNano())) + "-" + strconv.Itoa(int(rand.Intn(10000000)))
-
-	var transactionLog TransactionExecutionLog
-
-	transactionLog.GenerationID = txGenerationID
-
-	transactionsLoggerCollection := router.router.MainDatabase.Collection(COLLECTION_IDLE_EXECUTION_LOG)
-
-	_, err = transactionsLoggerCollection.InsertOne(context.TODO(), transactionLog)
+	err = router.validateWalletAuth(trainerJoin.Wallet, router.router.ServerConfig.ACTIVE_CHAIN_ID, trainerJoin.WalletAuth)
 
 	if err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": IDLE_DATABASE_INSERT_ERROR})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": err.Error()})
 		return
 	}
 
-	_, err = router.getRandomQueue().EnqueueObject(IdleTransactionQueueElement{Type: "TRAINER_JOIN", Contract: contractAddress, Data: trainerJoinTxData, GasLimit: uint64(110000), GenerationID: txGenerationID})
+	err = router.validateUserFee(trainerJoin.Wallet)
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": err.Error()})
+		return
+	}
+
+	contractAddress := common.HexToAddress(router.deployments.TrainersIDLE.Address)
+	trainerJoinTxData := GetTrainerJoinTxData(trainerJoin.Wallet, trainerJoin.Trainer)
+
+	txGenerationID, err := router.initializeDatabaseTransaction()
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": err.Error()})
+		return
+	}
+
+	_, err = router.getRandomQueue().EnqueueObject(IdleTransactionQueueElement{Type: "TRAINER_JOIN", Contract: contractAddress, Data: trainerJoinTxData, GasLimit: uint64(110000), GenerationID: *txGenerationID})
 
 	if err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": IDLE_ENQUEUE_ERROR})
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, gin.H{"error": false, "generationID": txGenerationID})
+	c.IndentedJSON(http.StatusOK, gin.H{"error": false, "generationID": *txGenerationID})
 }
 
 func (router *IdleRouter) executeCollectTransactionPointsRequest(c *gin.Context) {
@@ -251,32 +306,97 @@ func (router *IdleRouter) executeCollectTransactionPointsRequest(c *gin.Context)
 		return
 	}
 
-	contractAddress := common.HexToAddress(router.deployments.TrainersIDLE.Address)
-	trainerJoinTxData := GetCollectTransactionPointsData(collectTransactionPoints.Wallet, collectTransactionPoints.Trainer)
-
-	txGenerationID := "tx-" + strconv.Itoa(int(time.Now().UnixNano())) + "-" + strconv.Itoa(int(rand.Intn(10000000)))
-
-	var transactionLog TransactionExecutionLog
-
-	transactionLog.GenerationID = txGenerationID
-
-	transactionsLoggerCollection := router.router.MainDatabase.Collection(COLLECTION_IDLE_EXECUTION_LOG)
-
-	_, err = transactionsLoggerCollection.InsertOne(context.TODO(), transactionLog)
+	err = router.validateWalletAuth(collectTransactionPoints.Wallet, router.router.ServerConfig.ACTIVE_CHAIN_ID, collectTransactionPoints.WalletAuth)
 
 	if err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": IDLE_DATABASE_INSERT_ERROR})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": err.Error()})
 		return
 	}
 
-	_, err = router.getRandomQueue().EnqueueObject(IdleTransactionQueueElement{Type: "COLLECT_TRANSACTION_POINTS", Contract: contractAddress, Data: trainerJoinTxData, GenerationID: txGenerationID, GasLimit: uint64(110000)})
+	err = router.validateUserFee(collectTransactionPoints.Wallet)
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": err.Error()})
+		return
+	}
+
+	contractAddress := common.HexToAddress(router.deployments.TrainersIDLE.Address)
+	trainerJoinTxData := GetCollectTransactionPointsData(collectTransactionPoints.Wallet, collectTransactionPoints.Trainer)
+
+	txGenerationID, err := router.initializeDatabaseTransaction()
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": err.Error()})
+		return
+	}
+
+	_, err = router.getRandomQueue().EnqueueObject(IdleTransactionQueueElement{Type: "COLLECT_TRANSACTION_POINTS", Contract: contractAddress, Data: trainerJoinTxData, GenerationID: *txGenerationID, GasLimit: uint64(110000)})
 
 	if err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": IDLE_ENQUEUE_ERROR})
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, gin.H{"error": false, "generationID": txGenerationID})
+	c.IndentedJSON(http.StatusOK, gin.H{"error": false, "generationID": *txGenerationID})
+}
+
+func (router *IdleRouter) executeCollectIdlePointsRequest(c *gin.Context) {
+	var collectTransactionPoints APIExecuteCollectTransactionPoints
+
+	err := c.BindJSON(&collectTransactionPoints)
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": IDLE_ERROR_REQUEST_PARSING})
+		return
+	}
+
+	err = router.validateWalletAuth(collectTransactionPoints.Wallet, router.router.ServerConfig.ACTIVE_CHAIN_ID, collectTransactionPoints.WalletAuth)
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": err.Error()})
+		return
+	}
+
+	err = router.validateUserFee(collectTransactionPoints.Wallet)
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": err.Error()})
+		return
+	}
+
+	contractAddress := common.HexToAddress(router.deployments.TrainersIDLE.Address)
+	trainerJoinTxData := GetCollectionIdlePointsData(collectTransactionPoints.Wallet, collectTransactionPoints.Trainer)
+
+	txGenerationID, err := router.initializeDatabaseTransaction()
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": err.Error()})
+		return
+	}
+
+	_, err = router.getRandomQueue().EnqueueObject(IdleTransactionQueueElement{Type: "COLLECT_TRANSACTION_POINTS", Contract: contractAddress, Data: trainerJoinTxData, GenerationID: *txGenerationID, GasLimit: uint64(110000)})
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": IDLE_ENQUEUE_ERROR})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, gin.H{"error": false, "generationID": *txGenerationID})
+}
+
+// SECTION - Collection Idle points
+
+func (router *IdleRouter) initializeDatabaseTransaction() (*string, error) {
+	var transactionLog TransactionExecutionLog
+	txGenerationID := "tx-" + strconv.Itoa(int(time.Now().UnixNano())) + "-" + strconv.Itoa(int(rand.Intn(10000000)))
+	transactionsLoggerCollection := router.router.MainDatabase.Collection(COLLECTION_IDLE_EXECUTION_LOG)
+	_, err := transactionsLoggerCollection.InsertOne(context.TODO(), transactionLog)
+
+	if err != nil {
+		return nil, errors.New(IDLE_DATABASE_INSERT_ERROR)
+	}
+
+	return &txGenerationID, nil
 }
 
 // SECTION - Onchain Listeners
@@ -352,6 +472,7 @@ func (router *IdleRouter) initChainListeners() {
 func (router *IdleRouter) CreateRoutes() error {
 	router.router.ParsedPost("/trainer-join", router.executeTrainerJoinRequest)
 	router.router.ParsedPost("/collect-transaction-points", router.executeCollectTransactionPointsRequest)
+	router.router.ParsedPost("/collect-idle-points", router.executeCollectIdlePointsRequest)
 	return nil
 }
 
