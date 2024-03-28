@@ -125,28 +125,28 @@ func ProcessTakeFeesEvent(abi abi.ABI, data []byte, event *TakeFees) error {
 	return nil
 }
 
-func GetTrainerJoinMethodSignature() []byte {
-	sign := []byte("joinWithTrainer(address,uint256)")
+func GetSignatureByMethod(method string) []byte {
+	sign := []byte(method)
 	hash := sha3.NewLegacyKeccak256()
 	hash.Write(sign)
 	methodID := hash.Sum(nil)[:4]
 	return methodID
+}
+
+func GetTrainerJoinMethodSignature() []byte {
+	return GetSignatureByMethod("joinWithTrainer(address,uint256)")
 }
 
 func GetCollectTransactionPointsSignature() []byte {
-	sign := []byte("collectTransPoints(address,uint256)")
-	hash := sha3.NewLegacyKeccak256()
-	hash.Write(sign)
-	methodID := hash.Sum(nil)[:4]
-	return methodID
+	return GetSignatureByMethod("collectTransPoints(address,uint256)")
 }
 
 func GetCollectIdlePointsSignature() []byte {
-	sign := []byte("collectIDLEPoints(address,uint256)")
-	hash := sha3.NewLegacyKeccak256()
-	hash.Write(sign)
-	methodID := hash.Sum(nil)[:4]
-	return methodID
+	return GetSignatureByMethod("collectIDLEPoints(address,uint256)")
+}
+
+func GetBuyImprovementSignature() []byte {
+	return GetSignatureByMethod("buyTrainerImprovement(address,uint256,uint256)")
 }
 
 func GetTrainerJoinTxData(userAddress string, trainer int) []byte {
@@ -187,6 +187,22 @@ func GetCollectionIdlePointsData(userAddress string, trainer int) []byte {
 	data = append(data, methodID...)
 	data = append(data, paddedAddress...)
 	data = append(data, paddedAmount...)
+
+	return data
+}
+
+func GetBuyImprovementData(userAddress string, trainer int, improvement int) []byte {
+	var data []byte
+
+	methodID := GetBuyImprovementSignature()
+	paddedAddress := ParseAddressForTxData(userAddress)
+	paddedAmount := ParseIntForTxData(trainer)
+	paddedImprovement := ParseIntForTxData(improvement)
+
+	data = append(data, methodID...)
+	data = append(data, paddedAddress...)
+	data = append(data, paddedAmount...)
+	data = append(data, paddedImprovement...)
 
 	return data
 }

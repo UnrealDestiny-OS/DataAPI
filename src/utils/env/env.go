@@ -7,8 +7,10 @@ import (
 	"strconv"
 	"unrealDestiny/dataAPI/src/utils/config"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/joho/godotenv"
+	hdwallet "github.com/miguelmota/go-ethereum-hdwallet"
 )
 
 // NOTE - LoadEnv (*ServerConfig)
@@ -80,20 +82,65 @@ func LoadEnv(serverConfig *config.ServerConfig) bool {
 		return false
 	}
 
-	var totalPrivateKeys int = 5
+	ADMIN_PASS := os.Getenv("ADMIN_PASS")
+
+	if ADMIN_PASS == "" {
+		log.Println("Error getting the ADMIN_PASS variable.")
+		return false
+	}
+
+	ETH_ADDRESS := os.Getenv("ETH_ADDRESS")
+
+	if ETH_ADDRESS == "" {
+		log.Println("Error getting the ETH_ADDRESS variable.")
+		return false
+	}
+
+	var totalPrivateKeys int = 10
 	var privateKeysError bool = false
-	var privateKeysStrings []string
-	var privateKeys []*ecdsa.PrivateKey
+	var loadedPrivateKeys []*ecdsa.PrivateKey
+
+	EXECUTOR_MNEMONIC := os.Getenv("IDLE_GAME_EXECUTOR_NMEMONIC")
+
+	if EXECUTOR_MNEMONIC == "" {
+		log.Println("Error getting the EXECUTOR_MNEMONIC variable.")
+		return false
+	}
+
+	wallet, err := hdwallet.NewFromMnemonic(EXECUTOR_MNEMONIC)
+
+	if err != nil {
+		log.Println("Error generating the seed from mnemonic.")
+		return false
+	}
 
 	for i := 0; i < totalPrivateKeys; i++ {
-		envString := os.Getenv("IDLE_GAME_EXECUTOR_PKEY_" + strconv.Itoa(i+1))
+		path := hdwallet.MustParseDerivationPath("m/44'/60'/0'/0/" + strconv.Itoa(i))
 
-		if envString == "" {
+		account, err := wallet.Derive(path, true)
+
+		if err != nil {
 			privateKeysError = true
 			break
 		}
 
-		privateKeysStrings = append(privateKeysStrings, envString)
+		log.Println("Loaded new wallet from mnemonic: " + account.Address.String())
+
+		privateKey, err := wallet.PrivateKeyHex(account)
+
+		if err != nil {
+			privateKeysError = true
+			break
+		}
+
+		parsedPrivateKey, err := crypto.HexToECDSA(privateKey)
+
+		if err != nil {
+			privateKeysError = true
+			break
+		}
+
+		loadedPrivateKeys = append(loadedPrivateKeys, parsedPrivateKey)
 	}
 
 	if privateKeysError {
@@ -107,6 +154,8 @@ func LoadEnv(serverConfig *config.ServerConfig) bool {
 	serverConfig.MONGO_DATABASE = MONGO_DATABASE
 	serverConfig.MTRG_CLIENT = MTRG_CLIENT_IP
 	serverConfig.MTRG_WS_CLIENT = MTRG_WS_CLIENT_IP
+	serverConfig.ADMIN_PASS = ADMIN_PASS
+	serverConfig.ETH_ADDRESS = common.HexToAddress(ETH_ADDRESS)
 
 	useProductionAddressParsed, err := strconv.ParseBool(USE_PRODUCTION_ADDRESSES)
 
@@ -122,25 +171,9 @@ func LoadEnv(serverConfig *config.ServerConfig) bool {
 		return false
 	}
 
-	for i := 0; i < totalPrivateKeys; i++ {
-		parsedKey, err := crypto.HexToECDSA(privateKeysStrings[i])
-
-		if err != nil {
-			privateKeysError = true
-			break
-		}
-
-		privateKeys = append(privateKeys, parsedKey)
-	}
-
-	if privateKeysError {
-		log.Println("Error parsing the executor private keys.")
-		return false
-	}
-
 	serverConfig.USE_PRODUCTION_ADDRESSES = useProductionAddressParsed
 	serverConfig.ACTIVE_CHAIN_ID = activeChainParsed
-	serverConfig.EXECUTOR_PRIVATE_KEY = privateKeys
+	serverConfig.EXECUTOR_PRIVATE_KEYS = loadedPrivateKeys
 
 	log.Println("Use PRODUCTION_ADDRESSES: " + strconv.FormatBool(serverConfig.USE_PRODUCTION_ADDRESSES))
 	log.Println("Use ACTIVE_CHAIN_ID: " + ACTIVE_CHAIN_ID)

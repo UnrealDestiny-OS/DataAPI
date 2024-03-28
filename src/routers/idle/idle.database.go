@@ -39,3 +39,16 @@ type APIExecuteCollectTransactionPoints struct {
 	WalletAuth string `json:"walletAuth"`
 	Chain      int    `json:"chain"`
 }
+
+type APIExecuteImprovementBuy struct {
+	Wallet      string `json:"wallet"`
+	Trainer     int    `json:"trainer"`
+	Improvement int    `json:"improvement"`
+	WalletAuth  string `json:"walletAuth"`
+	Chain       int    `json:"chain"`
+}
+
+type APIAdminRequest struct {
+	AdminPassword    string `json:"adminPassword"`
+	AccountInbalance string `json:"accountInbalance"`
+}

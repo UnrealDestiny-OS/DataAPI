@@ -5,6 +5,7 @@ import (
 	"crypto/ecdsa"
 	"errors"
 	"fmt"
+	"log"
 	"math/big"
 	"math/rand"
 	"net/http"
@@ -82,6 +83,8 @@ func (router *IdleRouter) updatePlayerInfo(amount string, wallet common.Address)
 
 	filter := bson.M{"wallet": wallet.String()}
 	update := bson.M{"$set": bson.M{"FEE": amount}}
+
+	router.router.ServerConfig.LOGGER.Info("Updating player info (" + wallet.String() + ").")
 
 	_, err := profilesCollection.UpdateOne(context.TODO(), filter, update)
 
@@ -384,6 +387,50 @@ func (router *IdleRouter) executeCollectIdlePointsRequest(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, gin.H{"error": false, "generationID": *txGenerationID})
 }
 
+func (router *IdleRouter) executeGetImprovementRequest(c *gin.Context) {
+	var buyImprovement APIExecuteImprovementBuy
+
+	err := c.BindJSON(&buyImprovement)
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": IDLE_ERROR_REQUEST_PARSING})
+		return
+	}
+
+	err = router.validateWalletAuth(buyImprovement.Wallet, router.router.ServerConfig.ACTIVE_CHAIN_ID, buyImprovement.WalletAuth)
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": err.Error()})
+		return
+	}
+
+	err = router.validateUserFee(buyImprovement.Wallet)
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": err.Error()})
+		return
+	}
+
+	contractAddress := common.HexToAddress(router.deployments.TrainersIDLE.Address)
+	trainerJoinTxData := GetBuyImprovementData(buyImprovement.Wallet, buyImprovement.Trainer, buyImprovement.Improvement)
+
+	txGenerationID, err := router.initializeDatabaseTransaction()
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": err.Error()})
+		return
+	}
+
+	_, err = router.getRandomQueue().EnqueueObject(IdleTransactionQueueElement{Type: "BUY_IMPROVEMENT", Contract: contractAddress, Data: trainerJoinTxData, GenerationID: *txGenerationID, GasLimit: uint64(110000)})
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": true, "message": IDLE_ENQUEUE_ERROR})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, gin.H{"error": false, "generationID": *txGenerationID})
+}
+
 // SECTION - Collection Idle points
 
 func (router *IdleRouter) initializeDatabaseTransaction() (*string, error) {
@@ -448,6 +495,7 @@ func (router *IdleRouter) initChainListeners() {
 					router.addNewInjectionLog(injectionEvent, injectionType)
 					router.updatePlayerInfo(injectionEvent.Amount.String(), injectionEvent.Wallet)
 				} else if IsTakeFees(vLog.Topics[0]) {
+					router.router.ServerConfig.LOGGER.Info("Detect new contract event (TAKE FEES) " + vLog.Topics[0].String())
 					var takeFeesEvent TakeFees
 
 					err := ProcessTakeFeesEvent(contractAbi, vLog.Data, &takeFeesEvent)
@@ -473,6 +521,7 @@ func (router *IdleRouter) CreateRoutes() error {
 	router.router.ParsedPost("/trainer-join", router.executeTrainerJoinRequest)
 	router.router.ParsedPost("/collect-transaction-points", router.executeCollectTransactionPointsRequest)
 	router.router.ParsedPost("/collect-idle-points", router.executeCollectIdlePointsRequest)
+	router.router.ParsedPost("/get-improvement", router.executeGetImprovementRequest)
 	return nil
 }
 
@@ -486,20 +535,23 @@ func (router *IdleRouter) Init(serverConfig *config.ServerConfig, mainRouter *gi
 }
 
 func (router *IdleRouter) InitExecutors() {
-	privateKeys := router.router.ServerConfig.EXECUTOR_PRIVATE_KEY
+	privateAccounts := router.router.ServerConfig.EXECUTOR_PRIVATE_KEYS
 
-	if len(privateKeys) > 0 {
-		for i := 0; i < len(privateKeys); i++ {
+	if len(privateAccounts) > 0 {
+		for i := 0; i < len(privateAccounts); i++ {
 			var executor IdleExecutorStatus
-			publicKey := privateKeys[i].Public()
+
+			executor.privateKey = privateAccounts[i]
+
+			publicKey := executor.privateKey.Public()
+
 			publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
 
 			if !ok {
-				router.router.ServerConfig.LOGGER.Fatal("cannot assert type: publicKey is not of type *ecdsa.PublicKey")
+				log.Fatal("error casting public key to ECDSA")
 				break
 			}
 
-			executor.privateKey = privateKeys[i]
 			executor.address = crypto.PubkeyToAddress(*publicKeyECDSA)
 			executor.available = true
 
@@ -520,10 +572,10 @@ func (router *IdleRouter) ValidateQueue(index int) {
 			return
 		} else {
 			if item != nil {
-				router.router.ServerConfig.LOGGER.Info("Start a transaction execution using a queue (" + strconv.Itoa(index) + ")")
 				router.transactionWaitGroup.Add(1)
 				var transactionElement IdleTransactionQueueElement
 				item.ToObject(&transactionElement)
+				router.router.ServerConfig.LOGGER.Info("Start a transaction execution using a queue (" + strconv.Itoa(index) + ") - " + transactionElement.Type)
 				go router.processTransaction(transactionElement.Contract, transactionElement.Data, transactionElement.GasLimit, transactionElement.GenerationID, &router.executors[index])
 				router.transactionWaitGroup.Wait()
 				router.router.ServerConfig.LOGGER.Info("Finish transaction execution")
@@ -552,6 +604,7 @@ func (router *IdleRouter) InitTransactionQueues() {
 
 		go router.ValidateQueue(i)
 	}
+
 }
 
 func (router *IdleRouter) InitETH(client *ethclient.Client, deployments *contracts.Deployments) {

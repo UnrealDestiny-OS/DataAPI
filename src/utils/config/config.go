@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/ecdsa"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -21,7 +22,9 @@ type ServerConfig struct {
 	CONTEXT                  context.Context
 	USE_PRODUCTION_ADDRESSES bool
 	ACTIVE_CHAIN_ID          int
-	EXECUTOR_PRIVATE_KEY     []*ecdsa.PrivateKey
+	ADMIN_PASS               string
+	ETH_ADDRESS              common.Address
+	EXECUTOR_PRIVATE_KEYS    []*ecdsa.PrivateKey
 }
 
 type Router struct {
