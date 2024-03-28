@@ -96,7 +96,7 @@ func LoadEnv(serverConfig *config.ServerConfig) bool {
 		return false
 	}
 
-	var totalPrivateKeys int = 10
+	var totalPrivateKeys int = 5
 	var privateKeysError bool = false
 	var loadedPrivateKeys []*ecdsa.PrivateKey
 

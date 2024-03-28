@@ -3,6 +3,7 @@ package controller
 import (
 	"errors"
 	"unrealDestiny/dataAPI/src/routers/idle"
+	runtime_router "unrealDestiny/dataAPI/src/routers/runtime"
 	"unrealDestiny/dataAPI/src/routers/trainers"
 	"unrealDestiny/dataAPI/src/routers/users"
 	"unrealDestiny/dataAPI/src/utils/config"
@@ -16,9 +17,11 @@ import (
 var USERS_ROUTER_ERROR string = "Error starting the users router"
 var TRAINERS_ROUTER_ERROR string = "Error starting the trainers router"
 var IDLE_ROUTERS_ERROR string = "Error starting the idle router"
+var RUNTIME_ROUTER_ERROR string = "Error starting the runtime router"
 
 type RoutersConfig struct {
 	Users    *users.UsersRouter
+	Runtime  *runtime_router.RuntimeRouter
 	Trainers *trainers.TrainersRouter
 	Idle     *idle.IdleRouter
 }
@@ -29,6 +32,13 @@ func (config *RoutersConfig) InitAllRoutes(serverConfig *config.ServerConfig) er
 	if err != nil {
 		serverConfig.LOGGER.Fatal(USERS_ROUTER_ERROR)
 		return errors.New(USERS_ROUTER_ERROR)
+	}
+
+	err = config.Runtime.CreateRoutes()
+
+	if err != nil {
+		serverConfig.LOGGER.Fatal(RUNTIME_ROUTER_ERROR)
+		return errors.New(RUNTIME_ROUTER_ERROR)
 	}
 
 	err = config.Trainers.CreateRoutes()
@@ -55,6 +65,7 @@ func CreateReaderController(serverConfig *config.ServerConfig, router *gin.Engin
 
 	routers := RoutersConfig{
 		Users:    users.CreateUsersRouter(serverConfig, router, database),
+		Runtime:  runtime_router.CreateRouter(serverConfig, router, database),
 		Trainers: trainers.CreateRouter(serverConfig, router, database, client, contractDeployments),
 		Idle:     idle.CreateRouter(serverConfig, router, database, client, contractDeployments),
 	}
